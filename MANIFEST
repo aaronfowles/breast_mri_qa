@@ -2,4 +2,5 @@
 setup.cfg
 setup.py
 breast_mri_qa_measure\__init__.py
+breast_mri_qa_measure\fetch.py
 breast_mri_qa_measure\measure.py

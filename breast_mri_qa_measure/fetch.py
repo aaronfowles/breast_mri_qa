@@ -1,3 +1,9 @@
+import numpy as np
+import requests
+import email
+import dicom
+import io
+
 class Fetcher:
 
     def __init__(self):
