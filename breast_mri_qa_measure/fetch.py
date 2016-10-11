@@ -47,12 +47,13 @@ class Fetcher:
             dcmdata = part.get_payload(decode=True)
             if dcmdata is not None:
                 dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
+        ret_dcmobjs = []
         for instance in dcmobjs:
             if not instance:
-                dcmobjs.remove(instance)
+                continue
             try:
                 instance[0][0x0008,0x0008] # Only images should have image type header tag
+                ret_dcmobjs.append(instance)
             except:
-                dcmobjs.remove(instance)
                 continue
-        return dcmobjs
+        return ret_dcmobjs
