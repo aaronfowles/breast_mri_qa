@@ -48,8 +48,10 @@ class Fetcher:
             if dcmdata is not None:
                 dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
         for instance in dcmobjs:
+            if not instance:
+                dcmobjs.remove(instance)
             try:
-                instance[0x0008,0x0008] # Only images should have image type header tag
+                instance[0][0x0008,0x0008] # Only images should have image type header tag
             except:
                 dcmobjs.remove(instance)
                 continue
