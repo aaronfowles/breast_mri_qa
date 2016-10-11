@@ -14,8 +14,8 @@ class Fetcher:
         self.accept = {'Accept': 'application/json'}
         self.query = {}
 
-    def get_studies_json(self, patient_id):
-        self.query = {'PatientID': patient_id}
+    def get_studies_json(self, patient_name):
+        self.query = {'PatientName': patient_name}
         url = 'http://%s:%d/dicom-web/studies/' % (self.host, self.port)
         http_response = requests.get(url, auth=(self.user, self.passwd), headers=self.accept, params=self.query)
         matches = http_response.json()
