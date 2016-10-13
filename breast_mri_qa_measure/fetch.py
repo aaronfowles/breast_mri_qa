@@ -53,4 +53,4 @@ class Fetcher:
                 ret_dcm_objs.append(obj[0])
             except(Exception):
                 pass
-        return ret_dcmobjs
+        return ret_dcm_objs
