@@ -47,4 +47,10 @@ class Fetcher:
             dcmdata = part.get_payload(decode=True)
             if dcmdata is not None:
                 dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
-        return dcmobjs
+        ret_dcm_objs = []
+        for obj in dcmobjs:
+            try:
+                ret_dcm_objs.append(obj[0])
+            except(Exception):
+                pass
+        return ret_dcmobjs
