@@ -55,4 +55,4 @@ class Fetcher:
             ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
         except:
             pass
-        return ret_dcm_dict
+        return ret_dicom_dict
