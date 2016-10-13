@@ -52,6 +52,7 @@ class Fetcher:
         try:
             ret_dcm_obj[0x0008,0x0008] # Only images should have image type header tag
             ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020,0x000E]
+            ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008,0x103E]
             ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
         except:
             pass
