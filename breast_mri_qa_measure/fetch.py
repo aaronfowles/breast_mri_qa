@@ -53,4 +53,12 @@ class Fetcher:
                 ret_dcm_objs.append(obj[0])
             except(Exception):
                 pass
+        dcm_objs = list(ret_dcm_objs)
+        ret_dcm_objs = []
+        for obj in dcm_objs:
+            try:
+                obj[0x0008,0x0008] # Only images should have image type header tag
+                ret_dcm_objs.append(obj)
+            except:
+                continue
         return ret_dcm_objs
