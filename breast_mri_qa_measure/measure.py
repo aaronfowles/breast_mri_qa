@@ -126,16 +126,14 @@ def calc_snr(unsuppressed_one,unsuppressed_two,roi_proportion=0.8):
     difference_image = unsuppressed_one - unsuppressed_two
 
     difference_image_left = difference_image.copy()
-    difference_image_left[~left_roi.astype(bool)] = 0
 
     difference_image_right = difference_image.copy()
-    difference_image_right[~right_roi.astype(bool)] = 0
 
-    left_std_dev = difference_image_left.std()
-    left_mean = difference_image_left.mean()
+    left_std_dev = difference_image_left[left_roi.astype(bool)].std()
+    left_mean = difference_image_left[left_roi.astype(bool)].mean()
 
-    right_std_dev = difference_image_right.std()
-    right_mean = difference_image_right.mean()
+    right_std_dev = difference_image_right[right_roi.astype(bool)].std()
+    right_mean = difference_image_right[right_roi.astype(bool)].mean()
 
     left_snr = left_mean / (sqrt(2)*left_std_dev)
     right_snr = right_mean / (sqrt(2)*right_std_dev)
