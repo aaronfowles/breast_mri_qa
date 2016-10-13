@@ -47,18 +47,12 @@ class Fetcher:
             dcmdata = part.get_payload(decode=True)
             if dcmdata is not None:
                 dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
-        ret_dcm_objs = []
-        for obj in dcmobjs:
-            try:
-                ret_dcm_objs.append(obj[0])
-            except(Exception):
-                pass
-        dcm_objs = list(ret_dcm_objs)
-        ret_dcm_objs = []
-        for obj in dcm_objs:
-            try:
-                obj[0x0008,0x0008] # Only images should have image type header tag
-                ret_dcm_objs.append(obj)
-            except:
-                continue
-        return ret_dcm_objs
+        ret_dcm_obj = dcmobjs[0]
+        ret_dicom_dict = {}
+        try:
+            ret_dcm_obj[0x0008,0x0008] # Only images should have image type header tag
+            ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020,0x000E]
+            ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
+        except:
+            pass
+        return ret_dcm_dict
