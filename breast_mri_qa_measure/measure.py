@@ -61,6 +61,7 @@ def calc_fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     left_fat_suppressed_mean_pixel_value = fat_suppressed_left.mean()
     water_suppressed_left = water_suppressed.copy()
     water_suppressed_left[~left_roi.astype(bool)] = 0
+    left_water_suppressed_mean_pixel_value = water_suppressed_left.mean()
     left_suppression_efficiency = 100 * ((left_fat_suppressed_mean_pixel_value - left_water_suppressed_mean_pixel_value) / left_fat_suppressed_mean_pixel_value)
 
     #Right Suppression efficiency
