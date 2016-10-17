@@ -10,8 +10,9 @@ from skimage.measure import label, regionprops
 
 from skimage.morphology import binary_erosion, binary_dilation
 
+
 def calc_fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
-    ret_dict = {'left_fse':None,'right_fse':None}
+    ret_dict = {'left_fse':None, 'right_fse':None}
 
     fat_suppressed_img_height = fat_suppressed.shape[0]
     fat_suppressed_img_width = fat_suppressed.shape[1]
@@ -19,15 +20,15 @@ def calc_fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     # Threshold regions
     otsu_thresh = threshold_otsu(fat_suppressed)
     np_mask = fat_suppressed > otsu_thresh
-    np_mask = np_mask.astype(int) #Recode booleans as integers
-    np_mask[(3*(fat_suppressed_img_height / 4)):,:] = 0 #Remove lower parts of phantom from mask
+    np_mask = np_mask.astype(int)  #Recode booleans as integers
+    np_mask[(3*(fat_suppressed_img_height / 4)):, :] = 0  #Remove lower parts of phantom from mask
     regions = label(np_mask)
     region_1 = (regions == 1).astype(int)
     region_2 = (regions == 2).astype(int)
     left_region = None
     right_region = None
     regionprops(region_1)[0].centroid[1]
-    if (regionprops(region_1)[0].centroid[1] > fat_suppressed_img_width / 2): # region centroid (x) > half-way point
+    if (regionprops(region_1)[0].centroid[1] > fat_suppressed_img_width / 2):  # region centroid (x) > half-way point
         left_region = region_1
         right_region = region_2
     else:
@@ -79,7 +80,7 @@ def calc_fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     return ret_dict
 
 def calc_snr(unsuppressed_one,unsuppressed_two,roi_proportion=0.8):
-    ret_dict = {'left_snr':None,'right_snr':None}
+    ret_dict = {'left_snr':None, 'right_snr':None}
 
     unsuppressed_img_height = unsuppressed_one.shape[0]
     unsuppressed_img_width = unsuppressed_two.shape[1]
@@ -88,7 +89,7 @@ def calc_snr(unsuppressed_one,unsuppressed_two,roi_proportion=0.8):
     otsu_thresh = threshold_otsu(unsuppressed_one)
     np_mask = unsuppressed_one > otsu_thresh
     np_mask = np_mask.astype(int) #Recode booleans as integers
-    np_mask[(3*(unsuppressed_img_height / 4)):,:] = 0 #Remove lower parts of phantom from mask
+    np_mask[(3*(unsuppressed_img_height / 4)):, :] = 0 #Remove lower parts of phantom from mask
     regions = label(np_mask)
     region_1 = (regions == 1).astype(int)
     region_2 = (regions == 2).astype(int)

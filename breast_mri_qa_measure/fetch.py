@@ -4,6 +4,7 @@ import email
 import dicom
 import io
 
+
 class Fetcher:
 
     def __init__(self):
@@ -50,9 +51,9 @@ class Fetcher:
         ret_dcm_obj = dcmobjs[0]
         ret_dicom_dict = {}
         try:
-            ret_dcm_obj[0x0008,0x0008] # Only images should have image type header tag
-            ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020,0x000E]
-            ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008,0x103E]
+            ret_dcm_obj[0x0008, 0x0008]  # Only images have image type header tag
+            ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020, 0x000E]
+            ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008, 0x103E]
             ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
         except:
             pass
