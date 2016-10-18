@@ -55,7 +55,7 @@ class Fetcher:
             ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020, 0x000E].value
             ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008, 0x103E].value
             ret_dicom_dict['StudyDescription'] = ret_dcm_obj[0x0008, 0x1030].value
-            ret_dicom_dict['StudyInstanceUID'] = ret_dcm_obj[0x0020, 0x0010].value
+            ret_dicom_dict['StudyInstanceUID'] = ret_dcm_obj[0x0020, 0x000D].value
             ret_dicom_dict['StudyDate'] = ret_dcm_obj[0x0008, 0x0020].value
             ret_dicom_dict['StationName'] = ret_dcm_obj[0x0008, 0x1010].value
             ret_dicom_dict['PatientName'] = ret_dcm_obj[0x0010, 0x0010].value
