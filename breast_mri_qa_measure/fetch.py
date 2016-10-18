@@ -62,5 +62,5 @@ class Fetcher:
             ret_dicom_dict['MagneticFieldStrength'] = ret_dcm_obj[0x0018, 0x0087].value
             ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
         except Exception as ex:
-            ret_dicom_dict['Exception'] = ex
+            pass
         return ret_dicom_dict
