@@ -52,8 +52,14 @@ class Fetcher:
         ret_dicom_dict = {}
         try:
             ret_dcm_obj[0x0008, 0x0008]  # Only images have image type header tag
-            ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020, 0x000E]
-            ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008, 0x103E]
+            ret_dicom_dict['SeriesInstanceUID'] = ret_dcm_obj[0x0020, 0x000E].value()
+            ret_dicom_dict['SeriesDescription'] = ret_dcm_obj[0x0008, 0x103E].value()
+            ret_dicom_dict['StudyDescription'] = ret_dcm_obj[0x0008, 0x1030].value()
+            ret_dicom_dict['StudyInstanceUID'] = ret_dcm_obj[0x0020, 0x0010].value()
+            ret_dicom_dict['StationName'] = ret_dcm_obj[0x0008, 0x1010].value()
+            ret_dicom_dict['PatientName'] = ret_dcm_obj[0x0010, 0x0010].value()
+            ret_dicom_dict['PatientID'] = ret_dcm_obj[0x0010, 0x0020].value()
+            ret_dicom_dict['MagneticFieldStrength'] = ret_dcm_obj[0x0018, 0x0087].value()
             ret_dicom_dict['PixelArray'] = ret_dcm_obj.pixel_array
         except:
             pass
