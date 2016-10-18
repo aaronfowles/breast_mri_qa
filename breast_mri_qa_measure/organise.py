@@ -28,52 +28,52 @@ class Protocol:
 
     def assign_instances_to_protocol(self, list_instances):
         for instance in list_instances:
-            if ('COIL 1' in instance['SeriesDescription'].value):
+            if ('COIL 1' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_one_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_one_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_one_acquisition_two'] = instance
-            if ('COIL 2' in instance['SeriesDescription'].value):
+            if ('COIL 2' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_two_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_two_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_two_acquisition_two'] = instance
-            if ('COIL 3' in instance['SeriesDescription'].value):
+            if ('COIL 3' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_three_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_three_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_three_acquisition_two'] = instance
-            if ('COIL 4' in instance['SeriesDescription'].value):
+            if ('COIL 4' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_four_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_four_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_four_acquisition_two'] = instance
-            if ('COIL 5' in instance['SeriesDescription'].value):
+            if ('COIL 5' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_five_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_five_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_five_acquisition_two'] = instance
-            if ('COIL 6' in instance['SeriesDescription'].value):
+            if ('COIL 6' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_six_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_six_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_six_acquisition_two'] = instance
-            if ('COIL 7' in instance['SeriesDescription'].value):
+            if ('COIL 7' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['coil_seven_acquisition_one'] is None):
                     self.dict_protocol_instances['coil_seven_acquisition_one'] = instance
                 else:
                     self.dict_protocol_instances['coil_seven_acquisition_two'] = instance
-            if ('SPAIR' in instance['SeriesDescription'].value):
-                if ('WATER' in instance['SeriesDescription'].value):
+            if ('SPAIR' in instance['SeriesDescription']):
+                if ('WATER' in instance['SeriesDescription']):
                     self.dict_protocol_instances['spair_water'] = instance
-                if ('FAT' in instance['SeriesDescription'].value):
+                if ('FAT' in instance['SeriesDescription']):
                     self.dict_protocol_instances['spair_fat'] = instance
-            if ('SPIR' in instance['SeriesDescription'].value):
-                if ('WATER' in instance['SeriesDescription'].value):
+            if ('SPIR' in instance['SeriesDescription']):
+                if ('WATER' in instance['SeriesDescription']):
                     self.dict_protocol_instances['spir_water'] = instance
-                if ('FAT' in instance['SeriesDescription'].value):
+                if ('FAT' in instance['SeriesDescription']):
                     self.dict_protocol_instances['spir_fat'] = instance
-            if ('TEST' in instance['SeriesDescription'].value):
+            if ('TEST' in instance['SeriesDescription']):
                 if(self.dict_protocol_instances['snr_acquisition_one'] is None):
                     self.dict_protocol_instances['snr_acquisition_one'] = instance
                 else:
