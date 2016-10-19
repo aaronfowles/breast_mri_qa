@@ -7,11 +7,11 @@ import io
 
 class Fetcher:
 
-    def __init__(self):
-        self.host = '139.59.186.101'
-        self.port = 80
-        self.user = 'orthanc'
-        self.passwd = 'orthanc'
+    def __init__(self, host, port, user, passwd):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.passwd = passwd
         self.accept = {'Accept': 'application/json'}
         self.query = {}
 
