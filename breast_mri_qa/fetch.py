@@ -42,13 +42,17 @@ class Fetcher:
         url = 'http://%s:%d/dicom-web/studies/%s/series/%s' % (self.host, self.port, studyuid, seriesuid)
         http_response = requests.get(url, auth=(self.user, self.passwd))
         # Construct valid mime by prepending content type
-        hdr = ('Content-Type: ' + http_response.headers['Content-Type']).encode()
-        msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
+        if (sys.version_info[0] == 2):
+            hdr = ('Content-Type: ' + http_response.headers['Content-Type']).encode()
+            msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
+        else:
+            hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
+            msg =  email.message_from_string(hdr + '\r\n' + http_response.content)
         dcmobjs = []
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
             if dcmdata is not None:
-                if (sys.version_info[0] == 2):
+                if ():
                     dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
                 else:
                     dcmobjs.append(dicom.read_file(io.StringIO(dcmdata)))
