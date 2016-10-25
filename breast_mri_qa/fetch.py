@@ -47,7 +47,7 @@ class Fetcher:
             msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
         else:
             hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
-            msg =  email.message_from_string(hdr + '\r\n' + http_response.content)
+            msg =  str(email.message_from_string(hdr + '\r\n' + http_response.content))
         dcmobjs = []
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
