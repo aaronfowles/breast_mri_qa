@@ -21,7 +21,7 @@ class Protocol:
                                 ('coil_six_acquisition_two',['COIL 6']),
                                 ('coil_seven_acquisition_one',['COIL 7']),
                                 ('coil_seven_acquisition_two',['COIL 7']),
-        ]
+                                ]
         self.dict_protocol_instances = {}
         for obj in self.required_images:
             self.dict_protocol_instances[obj[0]] = None
