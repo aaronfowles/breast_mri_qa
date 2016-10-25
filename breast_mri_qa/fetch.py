@@ -52,10 +52,10 @@ class Fetcher:
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
             if dcmdata is not None:
-                if ():
+                if (sys.version_info[0] == 2):
                     dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
                 else:
-                    dcmobjs.append(dicom.read_file(io.StringIO(dcmdata)))
+                    dcmobjs.append(dicom.read_file(io.StringIO(dcmdata).encode('UTF-8')))
         ret_dcm_obj = dcmobjs[0]
         ret_dicom_dict = {}
         try:
