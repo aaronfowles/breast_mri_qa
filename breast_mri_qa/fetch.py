@@ -4,6 +4,7 @@ import email
 import dicom
 import io
 import sys
+import json
 
 
 class Fetcher:
@@ -43,11 +44,11 @@ class Fetcher:
         http_response = requests.get(url, auth=(self.user, self.passwd))
         # Construct valid mime by prepending content type
         if (sys.version_info[0] == 2):
-            hdr = ('Content-Type: ' + http_response.headers['Content-Type']).encode()
+            hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
             msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
         else:
-            hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
-            msg =  email.message_from_bytes(hdr + '\r\n' + http_response.content)
+            hdr = ('Content-Type: ' + http_response.headers['Content-Type']).encode('UTF-8')
+            msg =  email.message_from_bytes(hdr + b'\r\n' + http_response.content)
         dcmobjs = []
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
@@ -55,7 +56,7 @@ class Fetcher:
                 if (sys.version_info[0] == 2):
                     dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
                 else:
-                    dcmobjs.append(dicom.read_file(io.StringIO(dcmdata).encode('UTF-8')))
+                    dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
         ret_dcm_obj = dcmobjs[0]
         ret_dicom_dict = {}
         try:

@@ -65,7 +65,7 @@ class Protocol:
                         break
 
         missing_acquisitions = []
-        for k, v in self.dict_protocol_instances.iteritems():
+        for k, v in self.dict_protocol_instances.items():
             if v is None:
                 missing_acquisitions.append(k)
         return missing_acquisitions

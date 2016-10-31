@@ -1,133 +1,90 @@
 import os
 import dicom
 import numpy as np
-
 from math import sqrt, ceil
 
 from skimage.filters import threshold_otsu
-
 from skimage.measure import label, regionprops
-
 from skimage.morphology import binary_erosion, binary_dilation
 
+def calculate_efficiency(fat_suppressed, water_suppressed, roi):
+    fat_suppressed = fat_suppressed.copy()
+    fat_suppressed_mean_pixel_value = fat_suppressed[roi.astype(bool)].mean()
 
-def calc_fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
-    ret_dict = {'left_fse':None, 'right_fse':None}
+    water_suppressed = water_suppressed.copy()
+    water_suppressed_mean_pixel_value = water_suppressed[roi.astype(bool)].mean()
 
-    fat_suppressed_img_height = fat_suppressed.shape[0]
-    fat_suppressed_img_width = fat_suppressed.shape[1]
+    suppression_efficiency = 100 * ((fat_suppressed_mean_pixel_value - water_suppressed_mean_pixel_value) / fat_suppressed_mean_pixel_value)
+    return suppression_efficiency
 
-    # Threshold regions
-    otsu_thresh = threshold_otsu(fat_suppressed)
-    np_mask = fat_suppressed > otsu_thresh
+def find_roi(region, roi_proportion):
+    region_area = regionprops(region)[0].area
+    target_roi_area = roi_proportion * region_area
+    actual_roi_proportion = 1
+    roi = region.copy()
+    while actual_roi_proportion > roi_proportion:
+        roi = binary_erosion(roi).astype(int)
+        actual_roi_proportion = regionprops(roi)[0].area / float(region_area)
+    return roi
+
+def assign_regions(image_array):
+    img_height = image_array.shape[0]
+    img_width = image_array.shape[1]
+
+    otsu_thresh = threshold_otsu(image_array)
+    np_mask = image_array > otsu_thresh
     np_mask = np_mask.astype(int)  #Recode booleans as integers
-    np_mask[(3*(fat_suppressed_img_height / 4)):, :] = 0  #Remove lower parts of phantom from mask
+    np_mask[(int(0.75*(img_height))):, :] = 0  #Remove lower parts of phantom from mask
     regions = label(np_mask)
     region_1 = (regions == 1).astype(int)
     region_2 = (regions == 2).astype(int)
     left_region = None
     right_region = None
     regionprops(region_1)[0].centroid[1]
-    if (regionprops(region_1)[0].centroid[1] > fat_suppressed_img_width / 2):  # region centroid (x) > half-way point
+    if (regionprops(region_1)[0].centroid[1] > img_width / 2):  # region centroid (x) > half-way point
         left_region = region_1
         right_region = region_2
     else:
         left_region = region_2
         right_region = region_1
 
-    # Locations are specified as tuples in (y,x) top-left is (0,0)
-    left_center = regionprops(left_region)[0].centroid
-    right_center = regionprops(right_region)[0].centroid
+    return {'left': left_region, 'right': right_region}
 
-    left_region_area = regionprops(left_region)[0].area
-    right_region_area = regionprops(right_region)[0].area
+def get_mid_slice(instance):
+    if len(instance) <= 1:
+        # Nonsense to get middle slice in this case
+        return instance
+    pixel_array = instance['PixelArray']
+    return pixel_array[int(len(pixel_array) / float(2))]
 
-    left_target_roi_area = roi_proportion * left_region_area
-    actual_left_roi_proportion = 1
-    left_roi = left_region.copy()
-    while actual_left_roi_proportion > roi_proportion:
-        left_roi = binary_erosion(left_roi).astype(int)
-        actual_left_roi_proportion = regionprops(left_roi)[0].area / float(left_region_area)
+def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
+    ret_dict = {'left_fse':None, 'right_fse':None}
 
-    right_target_roi_area = roi_proportion * right_region_area
-    actual_right_roi_proportion = 1
-    right_roi = right_region.copy()
-    while actual_right_roi_proportion > roi_proportion:
-        right_roi = binary_erosion(right_roi).astype(int)
-        actual_right_roi_proportion = regionprops(right_roi)[0].area / float(right_region_area)
+    regions = assign_regions(fat_suppressed)
+    left_region = regions['left']
+    right_region = regions['right']
+
+    left_roi = find_roi(left_region, roi_proportion)
+    right_roi = find_roi(right_region, roi_proportion)
 
     #Left Suppression efficiency
-    fat_suppressed_left = fat_suppressed.copy()
-    fat_suppressed_left[~left_roi.astype(bool)] = 0
-    left_fat_suppressed_mean_pixel_value = fat_suppressed_left.mean()
-    water_suppressed_left = water_suppressed.copy()
-    water_suppressed_left[~left_roi.astype(bool)] = 0
-    left_water_suppressed_mean_pixel_value = water_suppressed_left.mean()
-    left_suppression_efficiency = 100 * ((left_fat_suppressed_mean_pixel_value - left_water_suppressed_mean_pixel_value) / left_fat_suppressed_mean_pixel_value)
-
-    #Right Suppression efficiency
-    fat_suppressed_right = fat_suppressed.copy()
-    fat_suppressed_right[~right_roi.astype(bool)] = 0
-    right_fat_suppressed_mean_pixel_value = fat_suppressed_right.mean()
-    water_suppressed_right = water_suppressed.copy()
-    water_suppressed_right[~right_roi.astype(bool)] = 0
-    right_water_suppressed_mean_pixel_value = water_suppressed_right.mean()
-    right_suppression_efficiency = 100 * ((right_fat_suppressed_mean_pixel_value - right_water_suppressed_mean_pixel_value) / right_fat_suppressed_mean_pixel_value)
-
-    ret_dict['left_fse'] = left_suppression_efficiency
-    ret_dict['right_fse'] = right_suppression_efficiency
+    ret_dict['left_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, left_roi)
+    ret_dict['right_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, right_roi)
 
     return ret_dict
 
-def calc_snr(unsuppressed_one,unsuppressed_two,roi_proportion=0.8):
+def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
     ret_dict = {'left_snr':None, 'right_snr':None}
 
-    unsuppressed_img_height = unsuppressed_one.shape[0]
-    unsuppressed_img_width = unsuppressed_two.shape[1]
+    regions = assign_regions(unsuppressed_one)
+    left_region = regions['left']
+    right_region = regions['right']
 
-    # Threshold regions
-    otsu_thresh = threshold_otsu(unsuppressed_one)
-    np_mask = unsuppressed_one > otsu_thresh
-    np_mask = np_mask.astype(int) #Recode booleans as integers
-    np_mask[(3*(unsuppressed_img_height / 4)):, :] = 0 #Remove lower parts of phantom from mask
-    regions = label(np_mask)
-    region_1 = (regions == 1).astype(int)
-    region_2 = (regions == 2).astype(int)
-    left_region = None
-    right_region = None
-    regionprops(region_1)[0].centroid[1]
-    if (regionprops(region_1)[0].centroid[1] > unsuppressed_img_width / 2): # region centroid (x) > half-way point
-        left_region = region_1
-        right_region = region_2
-    else:
-        left_region = region_2
-        right_region = region_1
-
-    # Locations are specified as tuples in (y,x) top-left is (0,0)
-    left_center = regionprops(left_region)[0].centroid
-    right_center = regionprops(right_region)[0].centroid
-
-    left_region_area = regionprops(left_region)[0].area
-    right_region_area = regionprops(right_region)[0].area
-
-    left_target_roi_area = roi_proportion * left_region_area
-    actual_left_roi_proportion = 1
-    left_roi = left_region.copy()
-    while actual_left_roi_proportion > roi_proportion:
-        left_roi = binary_erosion(left_roi).astype(int)
-        actual_left_roi_proportion = regionprops(left_roi)[0].area / float(left_region_area)
-
-    right_target_roi_area = roi_proportion * right_region_area
-    actual_right_roi_proportion = 1
-    right_roi = right_region.copy()
-    while actual_right_roi_proportion > roi_proportion:
-        right_roi = binary_erosion(right_roi).astype(int)
-        actual_right_roi_proportion = regionprops(right_roi)[0].area / float(right_region_area)
+    left_roi = find_roi(left_region, roi_proportion)
+    right_roi = find_roi(right_region, roi_proportion)
 
     difference_image = unsuppressed_one - unsuppressed_two
-
     difference_image_left = difference_image.copy()
-
     difference_image_right = difference_image.copy()
 
     left_std_dev = difference_image_left[left_roi.astype(bool)].std()
