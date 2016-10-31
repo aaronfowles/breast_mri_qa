@@ -4,6 +4,8 @@ import email
 import dicom
 import io
 import sys
+import multiprocessing
+from functools import partial
 
 
 class Fetcher:
@@ -47,7 +49,7 @@ class Fetcher:
             msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
         else:
             hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
-            msg =  email.message_from_string(hdr + '\r\n' + http_response.content)
+            msg =  email.message_from_bytes(hdr + '\r\n' + http_response.content)
         dcmobjs = []
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
@@ -76,3 +78,10 @@ class Fetcher:
             return None
         else:
             return ret_dicom_dict
+
+        def get_valid_image_instances(self, studyuid, seriesuids):
+            instances = []
+            p = multiprocessing.Pool(multiprocessing.cpu_count())
+            args = zip(seriesuids, [studyuid for i in range(len(seriesuids))])
+            instances = p.map(get_valid_image_instances, zip(*args))
+            return instances
