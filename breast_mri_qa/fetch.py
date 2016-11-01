@@ -1,3 +1,6 @@
+""" This module deals with obtaining a dicom object from an Orthanc server.
+
+"""
 import numpy as np
 import requests
 import email
@@ -8,8 +11,45 @@ import json
 
 
 class Fetcher:
-
+    """ A Class to facilitate an object-oriented approach to querying the
+        Orthanc server.
+    """
     def __init__(self, host, port, user, passwd):
+        """
+        Class constructor will initialise class variables with appropriate
+        values.
+
+        These values specify the details required to connect to and authenticate
+        with the Orthanc server.
+
+        Parameters
+        ----------
+        host : String
+            The v4 IP address of the Orthanc DICOM server.
+            (e.g. `'192.168.0.3'`)
+        port: int
+            The port number that the Orthanc HTTP server is configured to
+            run on. (e.g. `80`)
+        user: String
+            The username required to access the Orthanc server.
+            (e.g. `'orthanc'`)
+        passwd: String
+            The password required to access the Orthanc server.
+            (e.g. `'orthanc'`)
+        Returns
+        -------
+
+        Examples
+        --------
+        >>> fetcher = Fetch(
+            host=192.168.0.1,
+            port=80,
+            user='orthanc',
+            passwd='orthanc'
+        )
+        >>>
+
+        """
         self.host = host
         self.port = port
         self.user = user
@@ -18,19 +58,53 @@ class Fetcher:
         self.query = {}
 
     def get_studies_json(self, patient_name):
+        """
+        A function to obtain a JSON object describing the studies on the
+        server which are associated with a patient name matching that supplied
+        in `patient_name`.
+
+        Parameters
+        ----------
+        patient_name: String
+            A string used to match against patient names of the studies on the
+            Orthanc server. You may include wildcards so that `'*BREAST*'` will
+            retrieve details of all studies where the patient name contains
+            'BREAST'.
+
+        Returns
+        -------
+        matches: JSON
+            A JSON object containing a list of matched studies with information
+            such as date of study, name of patient etc...
+
+        See Also
+        --------
+        Orthanc DICOMweb plugin -
+        https://orthanc.chu.ulg.ac.be/book/plugins/dicomweb.html
+
+        Examples
+        --------
+        >>> fetcher.get_studies_json('*BREAST*')
+        [{'00080005': {'Value': ['ISO_IR 100'], 'vr': 'CS'},
+            '00080020': {'Value': ['20160627'], 'vr': 'DA'},
+            '00080030': {'Value': ['120515'], 'vr': 'TM'},
+            '00080050': {'Value': [''], 'vr': 'SH'},
+            '00080061': {'Value': ['MR'], 'vr': 'CS'},
+            '00080090': {'Value': [''], 'vr': 'PN'},
+        ...
+        >>>
+        """
         self.query = {'PatientName': patient_name}
         url = 'http://%s:%d/dicom-web/studies/' % (self.host, self.port)
-        http_response = requests.get(url, auth=(self.user, self.passwd), headers=self.accept, params=self.query)
+        http_response = requests.get(
+            url,
+            auth=(self.user, self.passwd),
+            headers=self.accept,
+            params=self.query
+        )
         matches = http_response.json()
         return matches
 
-    def get_studies(self, patient_id):
-        self.query = {'PatientID': patient_id}
-        url = 'http://%s:%d/dicom-web/studies/' % (self.host, self.port)
-        http_response = requests.get(url, auth=(self.user, self.passwd), headers=self.accept, params=self.query)
-        matches = http_response.json()
-        studyuids = [match['0020000D']['Value'][0] for match in matches]
-        return studyuids
 
     def get_series(self, studyuid):
         url = 'http://%s:%d/dicom-web/studies/%s/series/' % (self.host, self.port, studyuid)
@@ -74,6 +148,7 @@ class Fetcher:
         except Exception as ex:
             pass
         if ret_dicom_dict is None:
-            return None
+            pass
         else:
-            return ret_dicom_dict
+            if ret_dicom_dict:
+                return ret_dicom_dict

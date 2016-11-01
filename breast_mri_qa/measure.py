@@ -1,7 +1,8 @@
 import os
+from math import sqrt, ceil
+
 import dicom
 import numpy as np
-from math import sqrt, ceil
 
 from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
