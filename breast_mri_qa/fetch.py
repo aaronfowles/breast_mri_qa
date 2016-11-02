@@ -105,6 +105,18 @@ class Fetcher:
         matches = http_response.json()
         return matches
 
+    def get_n_most_recent_study_details(self, patient_name, n_most_recent):
+        json_studies = self.get_studies_json(patient_name=patient_name)
+        studies = []
+        for study in json_studies:
+            c = {}
+            c['StudyDate'] = study['00080020']['Value'][0]
+            c['StudyUID'] = study['0020000D']['Value'][0]
+            c['PatientName'] = study['00100010']['Value'][0]
+            studies.append(c)
+        studies = sorted(studies, key=lambda k: k['StudyDate'])
+        return studies[:n_most_recent]
+
 
     def get_series(self, studyuid):
         url = 'http://%s:%d/dicom-web/studies/%s/series/' % (self.host, self.port, studyuid)
