@@ -1,3 +1,6 @@
+""" This module contains functions used to make the calculations required
+    for QA.
+"""
 import os
 from math import sqrt, ceil
 
@@ -9,6 +12,13 @@ from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, binary_dilation
 
 def calculate_efficiency(fat_suppressed, water_suppressed, roi):
+    """
+
+    Parameters
+    ----------
+    Returns
+    -------
+    """
     fat_suppressed = fat_suppressed.copy()
     fat_suppressed_mean_pixel_value = fat_suppressed[roi.astype(bool)].mean()
 
