@@ -278,7 +278,7 @@ class Protocol:
         Boolean
             True if image saved succesfully, False otherwise.
         """
-        if self.dict_protocol_instances[img_name] is None and img_name in dict_protocol_instances.keys():
+        if self.dict_protocol_instances[img_name] is None and img_name in self.dict_protocol_instances.keys():
             self.dict_protocol_instances[img_name] = instance
             return True
         else:
