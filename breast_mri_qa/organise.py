@@ -46,7 +46,7 @@ class Protocol:
         Boolean
             True if `search_term` occurs in SeriesDescription, False otherwise.
         """
-        if search_term in instance['SeriesDescription']:
+        if search_term in instance.series_description:
             return True
         else:
             return False
@@ -313,3 +313,29 @@ class Protocol:
             if v is None:
                 missing_acquisitions.append(k)
         return missing_acquisitions
+
+class Instance:
+
+    def __init__(
+            self,
+            series_instance_uid,
+            series_description,
+            study_description,
+            study_instance_uid,
+            study_date,
+            station_name,
+            patient_name,
+            patient_id,
+            magnetic_field_strength,
+            pixel_array
+        ):
+        self.series_instance_uid = series_instance_uid
+        self.series_description = series_description
+        self.study_description = study_description
+        self.study_instance_uid = study_instance_uid
+        self.study_date = study_date
+        self.station_name = station_name
+        self.patient_name = patient_name
+        self.patient_id = patient_id
+        self.magnetic_field_strength = magnetic_field_strength
+        self.pixel_array = pixel_array

@@ -11,9 +11,9 @@ from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, binary_dilation
 
-def __calculate_efficiency(fat_suppressed, water_suppressed, roi):
+def calculate_efficiency(fat_suppressed, water_suppressed, roi):
     """
-    Private helper function to calculate suppresion efficiency.
+    Helper function to calculate suppresion efficiency.
 
     Parameters
     ----------
@@ -31,7 +31,7 @@ def __calculate_efficiency(fat_suppressed, water_suppressed, roi):
     suppression_efficiency : float
         Unformatted float giving the suppression efficiency calculated using
         the following formula:
-        .. math:: 100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed  
+        .. math:: 100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed
     """
     fat_suppressed = fat_suppressed.copy()
     fat_suppressed_mean_pixel_value = fat_suppressed[roi.astype(bool)].mean()
@@ -42,7 +42,26 @@ def __calculate_efficiency(fat_suppressed, water_suppressed, roi):
     suppression_efficiency = 100 * ((fat_suppressed_mean_pixel_value - water_suppressed_mean_pixel_value) / fat_suppressed_mean_pixel_value)
     return suppression_efficiency
 
-def __find_roi(region, roi_proportion):
+def find_roi(region, roi_proportion):
+    """
+    Helper function to find the region of interest.
+
+    Parameters
+    ----------
+    region : 2-d numpy ndarray
+        Numpy area indicating region containing part of the test phantom
+        object. Elements with a value of 1 indicate parts of the image which
+        contain the feature, otherwise elements are 0.
+    roi_proportion : float
+        Value in the range [0-1] indicating proportion of `region` to select
+        as the region of interest.
+    Returns
+    -------
+    roi : 2-d numpy ndarray
+        Numpy area indicating region containing part of the test phantom
+        object to be used as the ROI. Elements with a value of 1 indicate parts
+        of the image which contain the feature, otherwise elements are 0.
+    """
     region_area = regionprops(region)[0].area
     target_roi_area = roi_proportion * region_area
     actual_roi_proportion = 1
@@ -52,7 +71,20 @@ def __find_roi(region, roi_proportion):
         actual_roi_proportion = regionprops(roi)[0].area / float(region_area)
     return roi
 
-def __assign_regions(image_array):
+def assign_regions(image_array):
+    """
+    Helper function assign left and right regions of test object.
+
+    Parameters
+    ----------
+    image_array : 2-d numpy ndarray
+        2-d numpy array to be used
+    Returns
+    -------
+    regions : dictionary
+        Dictionary containing two keys, left and right which contain references
+        to the respective 2-d arrays used to represent each region.
+    """
     img_height = image_array.shape[0]
     img_width = image_array.shape[1]
 
@@ -73,13 +105,13 @@ def __assign_regions(image_array):
         left_region = region_2
         right_region = region_1
 
-    return {'left': left_region, 'right': right_region}
+    regions = {'left': left_region, 'right': right_region}
+    return regions
 
-def get_mid_slice(instance):
-    if len(instance) <= 1:
+def get_mid_slice(pixel_array):
+    if len(pixel_array) <= 1:
         # Nonsense to get middle slice in this case
-        return instance
-    pixel_array = instance['PixelArray']
+        return pixel_array
     return pixel_array[int(len(pixel_array) / float(2))]
 
 def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):

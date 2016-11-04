@@ -10,6 +10,8 @@ import requests
 import dicom
 import json
 
+from .organise import Instance
+
 
 class Fetcher:
     """ A Class to facilitate an object-oriented approach to querying the
@@ -214,28 +216,30 @@ class Fetcher:
                 else:
                     dcmobjs.append(dicom.read_file(io.BytesIO(dcmdata)))
         # For Phillips scanners the dicom object is in the first element of the list
-        ret_dcm_obj = dcmobjs[0]
-        # Create a dictionary which will hold dicom instance pixel array and various headers
-        dicom_instance_info = {}
+        dcm_obj = dcmobjs[0]
+        # Create an instance object which will hold dicom instance pixel array and various headers
+        instance = None
         try:
-            ret_dcm_obj[0x0008, 0x0008]  # Only images have image type header tag
-            dicom_instance_info['SeriesInstanceUID'] = str(ret_dcm_obj[0x0020, 0x000E].value)
-            dicom_instance_info['SeriesDescription'] = ret_dcm_obj[0x0008, 0x103E].value
-            dicom_instance_info['StudyDescription'] = ret_dcm_obj[0x0008, 0x1030].value
-            dicom_instance_info['StudyInstanceUID'] = str(ret_dcm_obj[0x0020, 0x000D].value)
-            dicom_instance_info['StudyDate'] = ret_dcm_obj[0x0008, 0x0020].value
-            dicom_instance_info['StationName'] = ret_dcm_obj[0x0008, 0x1010].value
-            dicom_instance_info['PatientName'] = str(ret_dcm_obj[0x0010, 0x0010].value)
-            dicom_instance_info['PatientID'] = ret_dcm_obj[0x0010, 0x0020].value
-            dicom_instance_info['MagneticFieldStrength'] = str(ret_dcm_obj[0x0018, 0x0087].value)
-            dicom_instance_info['PixelArray'] = ret_dcm_obj.pixel_array
+            dcm_obj[0x0008, 0x0008]  # Only images have image type header tag
+            instance = Instance(
+                series_instance_uid = str(dcm_obj[0x0020, 0x000E].value),
+                series_description = dcm_obj[0x0008, 0x103E].value,
+                study_description = dcm_obj[0x0008, 0x1030].value,
+                study_instance_uid = str(dcm_obj[0x0020, 0x000D].value),
+                study_date = dcm_obj[0x0008, 0x0020].value,
+                station_name = dcm_obj[0x0008, 0x1010].value,
+                patient_name = str(dcm_obj[0x0010, 0x0010].value),
+                patient_id = dcm_obj[0x0010, 0x0020].value,
+                magnetic_field_strength = str(dcm_obj[0x0018, 0x0087].value),
+                pixel_array = dcm_obj.pixel_array
+            )
         # If exception then the dicom object is not an image so do nothing
         except Exception as ex:
             pass
 
-        # Don't return the empty dictionary if it is empty
-        if dicom_instance_info is None:
+        # Don't return the empty instance
+        if instance is None:
             pass
         else:
-            if dicom_instance_info:
-                return dicom_instance_info
+            if instance:
+                return instance
