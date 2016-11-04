@@ -109,13 +109,43 @@ def assign_regions(image_array):
     return regions
 
 def get_mid_slice(pixel_array):
+    """
+    Helper function to obtain the middle slice of a 3-d numpy ndarray.
+
+    Parameters
+    ----------
+    pixel_array : 3-d numpy ndarray
+        3-d array of form [z, y, x].
+
+    Returns
+    -------
+    pixel_array : 2-d numpy ndarray
+        A 2-d numpy array [y,x] of the middle slice from the 3-d input array
+    """
     if len(pixel_array) <= 1:
         # Nonsense to get middle slice in this case
         return pixel_array
     return pixel_array[int(len(pixel_array) / float(2))]
 
 def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
-    ret_dict = {'left_fse':None, 'right_fse':None}
+    """
+    Calculate fat suppression efficiency.
+
+    Parameters
+    ----------
+    fat_suppressed : 2-d ndarray
+    water_suppressed : 2-d ndarray
+    roi_proportion : float
+
+    Returns
+    -------
+    fse_results : dictionary of floats
+        `fse_results['left_fse']` contains a float indicating the results for
+        the left region. It is in the range [0-100]. `fse_results['right_fse']`
+        contains a float indicating the results for the right region.
+        It is also in the range [0-100].
+    """
+    fse_results = {'left_fse':None, 'right_fse':None}
 
     regions = assign_regions(fat_suppressed)
     left_region = regions['left']
@@ -125,13 +155,29 @@ def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     right_roi = find_roi(right_region, roi_proportion)
 
     #Left Suppression efficiency
-    ret_dict['left_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, left_roi)
-    ret_dict['right_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, right_roi)
+    fse_results['left_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, left_roi)
+    fse_results['right_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, right_roi)
 
-    return ret_dict
+    return fse_results
 
 def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
-    ret_dict = {'left_snr':None, 'right_snr':None}
+    """
+    Calculate the signal-to-noise ratio.
+
+    Parameters
+    ----------
+    unsuppressed_one : 2-d ndarray
+    unsuppressed_two : 2-d ndarray
+    roi_proportion : float
+
+    Returns
+    -------
+    snr_results : dictionary
+            `snr_results['left_snr']` contains a float indicating the results for
+            the left region. `snr_results['right_snr']` contains a float
+            indicating the results for the right region.
+    """
+    snr_results = {'left_snr':None, 'right_snr':None}
 
     regions = assign_regions(unsuppressed_one)
     left_region = regions['left']
@@ -153,7 +199,7 @@ def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
     left_snr = left_mean / (sqrt(2)*left_std_dev)
     right_snr = right_mean / (sqrt(2)*right_std_dev)
 
-    ret_dict['left_snr'] = left_snr
-    ret_dict['right_snr'] = right_snr
+    snr_results['left_snr'] = left_snr
+    snr_results['right_snr'] = right_snr
 
-    return ret_dict
+    return snr_results
