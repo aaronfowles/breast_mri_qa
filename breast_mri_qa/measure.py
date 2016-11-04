@@ -11,13 +11,27 @@ from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, binary_dilation
 
-def calculate_efficiency(fat_suppressed, water_suppressed, roi):
+def __calculate_efficiency(fat_suppressed, water_suppressed, roi):
     """
+    Private helper function to calculate suppresion efficiency.
 
     Parameters
     ----------
+    fat_suppressed : 2-d numpy array
+        2-d numpy array representing the fat suppressed image slice. Element
+        values in range [0-255].
+    water_suppressed: 2-d numpy array
+        2-d numpy array representing the water suppressed image slice. Element
+        values in range [0-255].
+    roi : 2-d numpy array
+        2-d numpy array representing the water suppressed image slice. Element
+        values are 1 if element is in region of interest and 0 otherwise.
     Returns
     -------
+    suppression_efficiency : float
+        Unformatted float giving the suppression efficiency calculated using
+        the following formula:
+        .. math:: 100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed  
     """
     fat_suppressed = fat_suppressed.copy()
     fat_suppressed_mean_pixel_value = fat_suppressed[roi.astype(bool)].mean()
@@ -28,7 +42,7 @@ def calculate_efficiency(fat_suppressed, water_suppressed, roi):
     suppression_efficiency = 100 * ((fat_suppressed_mean_pixel_value - water_suppressed_mean_pixel_value) / fat_suppressed_mean_pixel_value)
     return suppression_efficiency
 
-def find_roi(region, roi_proportion):
+def __find_roi(region, roi_proportion):
     region_area = regionprops(region)[0].area
     target_roi_area = roi_proportion * region_area
     actual_roi_proportion = 1
@@ -38,7 +52,7 @@ def find_roi(region, roi_proportion):
         actual_roi_proportion = regionprops(roi)[0].area / float(region_area)
     return roi
 
-def assign_regions(image_array):
+def __assign_regions(image_array):
     img_height = image_array.shape[0]
     img_width = image_array.shape[1]
 
