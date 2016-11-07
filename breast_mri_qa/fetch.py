@@ -1,54 +1,66 @@
-""" This module deals with obtaining a dicom object from an Orthanc server.
-
 """
-import email
-import numpy as np
+This module deals with obtaining a dicom object from an Orthanc server.
+"""
 import io
 import sys
+import email
+import json
 
+import numpy as np
 import requests
 import dicom
-import json
 
 from .organise import Instance
 
 
 class Fetcher:
-    """ A Class to facilitate an object-oriented approach to querying the
-        Orthanc server.
     """
+    A Class to facilitate an object-oriented approach to querying the
+    Orthanc server.
+
+    Parameter values specify the details required to connect to and
+    authenticate with the Orthanc server.
+
+    Parameters
+    ----------
+    host : String
+        The v4 IP address of the Orthanc DICOM server.
+        (e.g. `'192.168.0.3'`)
+    port : int
+        The port number that the Orthanc HTTP server is configured to
+        run on. (e.g. `80`)
+    user : String
+        The username required to access the Orthanc server.
+        (e.g. `'orthanc'`)
+    passwd : String
+        The password required to access the Orthanc server.
+        (e.g. `'orthanc'`)
+
+    Attributes (object)
+    ----------
+    host : String
+        The v4 IP address of the Orthanc DICOM server.
+        (e.g. `'192.168.0.3'`)
+    port : int
+        The port number that the Orthanc HTTP server is configured to
+        run on. (e.g. `80`)
+    user : String
+        The username required to access the Orthanc server.
+        (e.g. `'orthanc'`)
+    passwd : String
+        The password required to access the Orthanc server.
+        (e.g. `'orthanc'`)
+    accept : dictionary
+        MIME type used in the HTTP request header,
+        default value is {'Accept': 'application/json'}
+    """
+
     def __init__(self, host, port, user, passwd):
-        """
-        Class constructor will initialise class variables with appropriate
-        values.
-
-        These values specify the details required to connect to and authenticate
-        with the Orthanc server.
-
-        Parameters
-        ----------
-        host : String
-            The v4 IP address of the Orthanc DICOM server.
-            (e.g. `'192.168.0.3'`)
-        port : int
-            The port number that the Orthanc HTTP server is configured to
-            run on. (e.g. `80`)
-        user : String
-            The username required to access the Orthanc server.
-            (e.g. `'orthanc'`)
-        passwd : String
-            The password required to access the Orthanc server.
-            (e.g. `'orthanc'`)
-        Returns
-        -------
-        fetcher : Fetcher object
-        """
         self.host = host
         self.port = port
         self.user = user
         self.passwd = passwd
         self.accept = {'Accept': 'application/json'}
-        self.query = {}
 
     def get_studies_json(self, patient_name):
         """
@@ -72,8 +84,7 @@ class Fetcher:
 
         See Also
         --------
-        Orthanc DICOMweb plugin -
-        https://orthanc.chu.ulg.ac.be/book/plugins/dicomweb.html
+        Orthanc : https://orthanc.chu.ulg.ac.be/book/plugins/dicomweb.html
 
         Examples
         --------
@@ -87,13 +98,13 @@ class Fetcher:
             ...
         >>>
         """
-        self.query = {'PatientName': patient_name}
+        query = {'PatientName': patient_name}
         url = 'http://%s:%d/dicom-web/studies/' % (self.host, self.port)
         http_response = requests.get(
             url,
             auth=(self.user, self.passwd),
             headers=self.accept,
-            params=self.query
+            params=query
         )
         matches = http_response.json()
         return matches
@@ -135,7 +146,6 @@ class Fetcher:
         n_most_recent_studies = studies[:n_most_recent]
         return n_most_recent_studies
 
-
     def get_series(self, studyuid):
         """
         Get all series UIDs associated with a certain Study.
@@ -152,11 +162,15 @@ class Fetcher:
             by tag (0020,000E)
 
         """
-        url = 'http://%s:%d/dicom-web/studies/%s/series/' % (self.host, self.port, studyuid)
-        http_response = requests.get(url,
+        url = 'http://{}:{}/dicom-web/studies/{}/series/'.format(
+            self.host,
+            self.port,
+            studyuid
+        )
+        http_response = requests.get(
+            url,
             auth=(self.user, self.passwd),
-            headers=self.accept,
-            params=self.query
+            headers=self.accept
         )
         matches = http_response.json()
         seriesuids = [match['0020000E']['Value'][0] for match in matches]
@@ -178,24 +192,30 @@ class Fetcher:
         -------
         dicom_instance_info : dictionary
             A dictionary containing information from the instance object's
-            headers in a human-readable form. To obtain a list of keys and
-            the corresponding value type, use:
+            headers in a human-readable form.
 
-            >>> dicom_instance_info = get_valid_image_instance(studyuid, seriesuid)
-            >>> for k, v in dicom_instance_info.items():
-            ...    print ((k, type(v)))
-            ('StudyDate', <type 'str'>)
-            ('MagneticFieldStrength', <type 'str'>)
-            ('SeriesDescription', <type 'str'>)
-            ('StudyDescription', <type 'str'>)
-            ('PatientID', <type 'str'>)
-            ('PixelArray', <type 'numpy.ndarray'>)
-            ('StationName', <type 'str'>)
-            ('StudyInstanceUID', <type 'str'>)
-            ('SeriesInstanceUID', <type 'str'>)
-            ('PatientName', <type 'str'>)
+        Examples
+        --------
+        >>> dicom_instance_info = get_valid_image_instance(studyuid, seriesuid)
+        >>> for k, v in dicom_instance_info.items():
+        ...    print ((k, type(v)))
+        ('StudyDate', <type 'str'>)
+        ('MagneticFieldStrength', <type 'str'>)
+        ('SeriesDescription', <type 'str'>)
+        ('StudyDescription', <type 'str'>)
+        ('PatientID', <type 'str'>)
+        ('PixelArray', <type 'numpy.ndarray'>)
+        ('StationName', <type 'str'>)
+        ('StudyInstanceUID', <type 'str'>)
+        ('SeriesInstanceUID', <type 'str'>)
+        ('PatientName', <type 'str'>)
         """
-        url = 'http://%s:%d/dicom-web/studies/%s/series/%s' % (self.host, self.port, studyuid, seriesuid)
+        url = 'http://{}:{}/dicom-web/studies/{}/series/{}'.format(
+            self.host,
+            self.port,
+            studyuid,
+            seriesuid
+        )
         http_response = requests.get(
             url,
             auth=(self.user, self.passwd)
@@ -203,10 +223,10 @@ class Fetcher:
         # Construct valid mime by prepending content type
         if (sys.version_info[0] == 2):
             hdr = ('Content-Type: ' + http_response.headers['Content-Type'])
-            msg =  email.message_from_string(hdr + b'\r\n' + http_response.content)
+            msg = email.message_from_string(hdr + b'\r\n' + http_response.content)
         else:
             hdr = ('Content-Type: ' + http_response.headers['Content-Type']).encode('UTF-8')
-            msg =  email.message_from_bytes(hdr + b'\r\n' + http_response.content)
+            msg = email.message_from_bytes(hdr + b'\r\n' + http_response.content)
         dcmobjs = []
         for part in msg.walk():
             dcmdata = part.get_payload(decode=True)
@@ -222,16 +242,16 @@ class Fetcher:
         try:
             dcm_obj[0x0008, 0x0008]  # Only images have image type header tag
             instance = Instance(
-                series_instance_uid = str(dcm_obj[0x0020, 0x000E].value),
-                series_description = dcm_obj[0x0008, 0x103E].value,
-                study_description = dcm_obj[0x0008, 0x1030].value,
-                study_instance_uid = str(dcm_obj[0x0020, 0x000D].value),
-                study_date = dcm_obj[0x0008, 0x0020].value,
-                station_name = dcm_obj[0x0008, 0x1010].value,
-                patient_name = str(dcm_obj[0x0010, 0x0010].value),
-                patient_id = dcm_obj[0x0010, 0x0020].value,
-                magnetic_field_strength = str(dcm_obj[0x0018, 0x0087].value),
-                pixel_array = dcm_obj.pixel_array
+                series_instance_uid=str(dcm_obj[0x0020, 0x000E].value),
+                series_description=dcm_obj[0x0008, 0x103E].value,
+                study_description=dcm_obj[0x0008, 0x1030].value,
+                study_instance_uid=str(dcm_obj[0x0020, 0x000D].value),
+                study_date=dcm_obj[0x0008, 0x0020].value,
+                station_name=dcm_obj[0x0008, 0x1010].value,
+                patient_name=str(dcm_obj[0x0010, 0x0010].value),
+                patient_id=dcm_obj[0x0010, 0x0020].value,
+                magnetic_field_strength=str(dcm_obj[0x0018, 0x0087].value),
+                pixel_array=dcm_obj.pixel_array
             )
         # If exception then the dicom object is not an image so do nothing
         except Exception as ex:

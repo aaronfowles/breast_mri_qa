@@ -1,6 +1,7 @@
-""" This module contains functions used to make the calculations required
-    for QA.
 """
+This module contains functions used to make the calculations required for QA.
+"""
+
 import os
 from math import sqrt, ceil
 
@@ -10,6 +11,7 @@ import numpy as np
 from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, binary_dilation
+
 
 def calculate_efficiency(fat_suppressed, water_suppressed, roi):
     """
@@ -31,7 +33,7 @@ def calculate_efficiency(fat_suppressed, water_suppressed, roi):
     suppression_efficiency : float
         Unformatted float giving the suppression efficiency calculated using
         the following formula:
-        .. math:: 100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed
+        100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed
     """
     fat_suppressed = fat_suppressed.copy()
     fat_suppressed_mean_pixel_value = fat_suppressed[roi.astype(bool)].mean()
@@ -41,6 +43,7 @@ def calculate_efficiency(fat_suppressed, water_suppressed, roi):
 
     suppression_efficiency = 100 * ((fat_suppressed_mean_pixel_value - water_suppressed_mean_pixel_value) / fat_suppressed_mean_pixel_value)
     return suppression_efficiency
+
 
 def find_roi(region, roi_proportion):
     """
@@ -71,6 +74,7 @@ def find_roi(region, roi_proportion):
         actual_roi_proportion = regionprops(roi)[0].area / float(region_area)
     return roi
 
+
 def assign_regions(image_array):
     """
     Helper function assign left and right regions of test object.
@@ -90,15 +94,18 @@ def assign_regions(image_array):
 
     otsu_thresh = threshold_otsu(image_array)
     np_mask = image_array > otsu_thresh
-    np_mask = np_mask.astype(int)  #Recode booleans as integers
-    np_mask[(int(0.75*(img_height))):, :] = 0  #Remove lower parts of phantom from mask
+    # Recode booleans as integers
+    np_mask = np_mask.astype(int)
+    # Remove lower parts of phantom from mask
+    np_mask[(int(0.75*(img_height))):, :] = 0
     regions = label(np_mask)
     region_1 = (regions == 1).astype(int)
     region_2 = (regions == 2).astype(int)
     left_region = None
     right_region = None
     regionprops(region_1)[0].centroid[1]
-    if (regionprops(region_1)[0].centroid[1] > img_width / 2):  # region centroid (x) > half-way point
+    # region centroid (x) > half-way point
+    if (regionprops(region_1)[0].centroid[1] > img_width / 2):
         left_region = region_1
         right_region = region_2
     else:
@@ -107,6 +114,7 @@ def assign_regions(image_array):
 
     regions = {'left': left_region, 'right': right_region}
     return regions
+
 
 def get_mid_slice(pixel_array):
     """
@@ -127,6 +135,7 @@ def get_mid_slice(pixel_array):
         return pixel_array
     return pixel_array[int(len(pixel_array) / float(2))]
 
+
 def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     """
     Calculate fat suppression efficiency.
@@ -145,7 +154,7 @@ def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
         contains a float indicating the results for the right region.
         It is also in the range [0-100].
     """
-    fse_results = {'left_fse':None, 'right_fse':None}
+    fse_results = {'left_fse': None, 'right_fse': None}
 
     regions = assign_regions(fat_suppressed)
     left_region = regions['left']
@@ -154,11 +163,19 @@ def fse(fat_suppressed, water_suppressed, roi_proportion=0.8):
     left_roi = find_roi(left_region, roi_proportion)
     right_roi = find_roi(right_region, roi_proportion)
 
-    #Left Suppression efficiency
-    fse_results['left_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, left_roi)
-    fse_results['right_fse'] = calculate_efficiency(fat_suppressed, water_suppressed, right_roi)
-
+    # Left Suppression efficiency
+    fse_results['left_fse'] = calculate_efficiency(
+        fat_suppressed,
+        water_suppressed,
+        left_roi
+    )
+    fse_results['right_fse'] = calculate_efficiency(
+        fat_suppressed,
+        water_suppressed,
+        right_roi
+    )
     return fse_results
+
 
 def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
     """
@@ -177,7 +194,7 @@ def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
             the left region. `snr_results['right_snr']` contains a float
             indicating the results for the right region.
     """
-    snr_results = {'left_snr':None, 'right_snr':None}
+    snr_results = {'left_snr': None, 'right_snr': None}
 
     regions = assign_regions(unsuppressed_one)
     left_region = regions['left']

@@ -2,29 +2,28 @@
 contains all the images required to do the QA analysis.
 """
 
-class Protocol:
-    """ This class allows a user to specify and add images to a protocol.
 
+class Protocol:
+    """
+    Make Protocol objects.
+
+    Parameters
+    ----------
+    rules : list of 3-tuples
+        Each element of the rules list specifies the information required_images
+        to determine how to match a dicom object to a protocol image.
+        (e.g. The first item in the tuple specifies the name of the protocol image
+        (e.g. 'snr_acquisition_one'), the second specifies the name
+        of the function used to determine whether an image is appropriate
+        (e.g. 'is_snr') and the third specifies the string used to match an
+        image name to a protocol image (e.g.) 'SNR'.)
+
+    Attributes
+    -------
+    required_images : list of 3-tuples
+    dict_protocol_instances : dictionary
     """
     def __init__(self, rules):
-        """
-        Constructor class for making Protocol objects.
-
-        Parameters
-        ----------
-        rules : list of 3-tuples
-            Each element of the rules list specifies the information required_images
-            to determine how to match a dicom object to a protocol image.
-            (e.g. The first item in the tuple specifies the name of the protocol image
-            (e.g. 'snr_acquisition_one'), the second specifies the name
-            of the function used to determine whether an image is appropriate
-            (e.g. 'is_snr') and the third specifies the string used to match an
-            image name to a protocol image (e.g.) 'SNR'.)
-
-        Returns
-        -------
-        Protocol : Protocol object
-        """
         self.required_images = rules
         self.dict_protocol_instances = {}
         for obj in self.required_images:
@@ -39,11 +38,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if `search_term` occurs in SeriesDescription, False otherwise.
         """
         if search_term in instance.series_description:
@@ -60,11 +58,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if usable as an SNR image, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -78,11 +75,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if usable as an SPIR water suppression image, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -96,11 +92,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if usable as an SPIR fat suppression image, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -114,11 +109,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if usable as an SPAIR water fat suppression image, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -132,11 +126,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if usable as an SPAIR water fat suppression image, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -149,11 +143,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil one, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -166,11 +160,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil two, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -183,11 +177,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil three, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -200,11 +194,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil four, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -217,11 +211,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil five, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -234,11 +228,11 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if from coil six, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -251,11 +245,10 @@ class Protocol:
         ----------
         search_term : String
             String to search for in instance['SeriesDescription']
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
         Returns
         -------
-        Boolean
+        bool
             True if from coil seven, False otherwise.
         """
         return self.match_logic(search_term, instance)
@@ -271,11 +264,11 @@ class Protocol:
             Name to use as the identifying key in the `dict_protocol_instances`
             dictionary under which the image should be saved. This must match a
             valid protocol image name.
-        instance : dictionary
-            Dictionary containing dicom instance information
+        instance : Instance object
+
         Returns
         -------
-        Boolean
+        bool
             True if image saved succesfully, False otherwise.
         """
         if self.dict_protocol_instances[img_name] is None and img_name in self.dict_protocol_instances.keys():
@@ -284,7 +277,6 @@ class Protocol:
         else:
             return False
 
-
     def assign_instances_to_protocol(self, list_instances):
         """
         Takes a list of dictionaries containing dicom object information
@@ -292,8 +284,8 @@ class Protocol:
 
         Parameters
         ----------
-        list_instances : list of dictionaries containing dicom object information
-            A list of dictionaries containing dicom object information.
+        list_instances : list of Instance objects.
+
         Returns
         -------
         missing_acquisitions : list of Strings
@@ -314,8 +306,46 @@ class Protocol:
                 missing_acquisitions.append(k)
         return missing_acquisitions
 
-class Instance:
 
+class Instance:
+    """
+    Create an Instance object.
+
+    An object to hold the pixel array and associated dicom meta-data
+    of a dicom instance. In this context, an instance is a dicom object
+    pertaining to a multi-slice MRI image acquisition where `self.pixel_array`
+    is a 3-d numpy ndarray indexed by [z,y,x].
+
+    Parameters
+    ----------
+    series_instance_uid : String
+    series_description : String
+    study_description : String
+    study_instance_uid : String
+    study_date : String
+    station_name : String
+    patient_name : String
+    patient_id : String
+    magnetic_field_strength : String
+    pixel_array : 3-d ndarray
+
+    Attributes (object)
+    ----------
+    series_instance_uid : String
+    series_description : String
+    study_description : String
+    study_instance_uid : String
+    study_date : String
+    station_name : String
+    patient_name : String
+    patient_id : String
+    magnetic_field_strength : String
+    pixel_array : 3-d ndarray
+
+    See Also
+    --------
+    Numpy ndarray
+    """
     def __init__(
             self,
             series_instance_uid,
@@ -328,7 +358,7 @@ class Instance:
             patient_id,
             magnetic_field_strength,
             pixel_array
-        ):
+            ):
         self.series_instance_uid = series_instance_uid
         self.series_description = series_description
         self.study_description = study_description
