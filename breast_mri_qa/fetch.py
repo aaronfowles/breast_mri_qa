@@ -99,7 +99,7 @@ class Fetcher:
         >>>
         """
         query = {'PatientName': patient_name}
-        url = 'http://%s:%d/dicom-web/studies/' % (self.host, self.port)
+        url = 'http://{0}:{1}/dicom-web/studies/'.format(self.host, self.port)
         http_response = requests.get(
             url,
             auth=(self.user, self.passwd),
