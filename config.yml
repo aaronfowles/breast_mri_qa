@@ -1,0 +1,21 @@
+name_identifier_pairs:
+    snr_acquisition_one: TEST
+    snr_acquisition_two: TEST
+    spir_water: SPIR WATER
+    spir_fat: SPIR FAT
+    spair_water: SPAIR WATER
+    spair_fat: SPAIR FAT
+    coil_one_acquisition_one: COIL 1
+    coil_two_acquisition_two: COIL 1
+    coil_one_acquisition_two: COIL 2
+    coil_two_acquisition_one: COIL 2
+    coil_three_acquisition_one: COIL 3
+    coil_three_acquisition_two: COIL 3
+    coil_four_acquisition_one: COIL 4
+    coil_four_acquisition_two: COIL 4
+    coil_five_acquisition_one: COIL 5
+    coil_five_acquisition_two: COIL 5
+    coil_six_acquisition_one: COIL 6
+    coil_six_acquisition_two: COIL 6
+    coil_seven_acquisition_one: COIL 7
+    coil_seven_acquisition_two: COIL 7

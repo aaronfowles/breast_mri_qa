@@ -9,11 +9,14 @@ from breast_mri_qa import fetch, organise, measure
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', nargs=1, required=True)
-parser.add_argument('--port', nargs=1, required=True)
-parser.add_argument('--user', nargs=1, required=True)
-parser.add_argument('--passwd', nargs=1, required=True)
+parser.add_argument('--port', nargs=1, required=True, default=80)
+parser.add_argument('--user', nargs=1, required=True, default='orthanc')
+parser.add_argument('--passwd', nargs=1, required=True, default='orthanc')
+parser.add_argument('--config', nargs=1, required=True, default='config.yml')
 
 args = parser.parse_args()
+
+rules_config_file = args.config[0]
 
 fetcher = fetch.Fetcher(
     host=args.host[0],
@@ -42,29 +45,7 @@ seriesuids = fetcher.get_series(studyuid)
 print('fetching instances...')
 instances = list(filter(lambda x: x is not None, (fetcher.get_valid_image_instance(studyuid, uid) for uid in seriesuids)))
 
-rules = [
-    ('snr_acquisition_one', 'is_snr', 'TEST'),
-    ('snr_acquisition_two', 'is_snr', 'TEST'),
-    ('spir_water', 'is_spir_water_fse', 'SPIR WATER'),
-    ('spir_fat', 'is_spir_fat_fse', 'SPIR FAT'),
-    ('spair_water', 'is_spair_water_fse', 'SPAIR WATER'),
-    ('spair_fat', 'is_spair_fat_fse', 'SPAIR FAT'),
-    ('coil_one_acquisition_one', 'is_coil_one', 'COIL 1'),
-    ('coil_two_acquisition_two', 'is_coil_one', 'COIL 1'),
-    ('coil_one_acquisition_two', 'is_coil_two', 'COIL 2'),
-    ('coil_two_acquisition_one', 'is_coil_two', 'COIL 2'),
-    ('coil_three_acquisition_one', 'is_coil_three', 'COIL 3'),
-    ('coil_three_acquisition_two', 'is_coil_three', 'COIL 3'),
-    ('coil_four_acquisition_one', 'is_coil_four', 'COIL 4'),
-    ('coil_four_acquisition_two', 'is_coil_four', 'COIL 4'),
-    ('coil_five_acquisition_one', 'is_coil_five', 'COIL 5'),
-    ('coil_five_acquisition_two', 'is_coil_five', 'COIL 5'),
-    ('coil_six_acquisition_one', 'is_coil_six', 'COIL 6'),
-    ('coil_six_acquisition_two', 'is_coil_six', 'COIL 6'),
-    ('coil_seven_acquisition_one', 'is_coil_seven', 'COIL 7'),
-    ('coil_seven_acquisition_two', 'is_coil_seven', 'COIL 7'),
-]
-protocol = organise.Protocol(rules)
+protocol = organise.Protocol(rules_config_file)
 missing_instances = protocol.assign_instances_to_protocol(instances)
 assert not missing_instances, missing_instances
 
