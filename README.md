@@ -10,14 +10,10 @@ The demonstrative notebook may be found [here](ExampleBreastMRI.ipynb).
 
 ## CLI
 The following instructions will allow you to use the command line interface.
-
 `git clone https://github.com/aaronfowles/breast_mri_qa.git`
-
 `cd breast_mri_qa`
-
-`python bmqa.py --host 139.59.186.101 --port 80 --user orthanc --passwd orthanc --config config.yml`
-
-Follow the instructions
+`python bmqa.py --config config.yml`
+Follow the instructions.
 
 
 

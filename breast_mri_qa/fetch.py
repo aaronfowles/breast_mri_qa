@@ -98,7 +98,8 @@ class Fetcher:
             ...
         >>>
         """
-        query = {'PatientName': patient_name}
+        patient_search_term = '*{}*'.format(patient_name)
+        query = {'PatientName': patient_search_term}
         url = 'http://{0}:{1}/dicom-web/studies/'.format(self.host, self.port)
         http_response = requests.get(
             url,
@@ -141,6 +142,12 @@ class Fetcher:
             c['StudyDate'] = study['00080020']['Value'][0]
             c['StudyUID'] = study['0020000D']['Value'][0]
             c['PatientName'] = study['00100010']['Value'][0]
+            seriesuids_for_station_name = self.get_series(c['StudyUID'])
+            for uid in seriesuids_for_station_name:
+                instance = self.get_valid_image_instance(c['StudyUID'], uid)
+                if instance:
+                    c['StationName'] = instance.station_name
+                    break
             studies.append(c)
         studies = sorted(studies, key=lambda k: k['StudyDate'])
         n_most_recent_studies = studies[:n_most_recent]
@@ -190,9 +197,7 @@ class Fetcher:
 
         Returns
         -------
-        dicom_instance_info : dictionary
-            A dictionary containing information from the instance object's
-            headers in a human-readable form.
+        dicom_instance_info : Instance
 
         Examples
         --------
