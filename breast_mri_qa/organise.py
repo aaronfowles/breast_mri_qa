@@ -1,4 +1,5 @@
-""" This module allows a user to specify a protocol to ensure that a study
+"""
+This module allows a user to specify a protocol to ensure that a study
 contains all the images required to do the QA analysis.
 """
 import yaml
@@ -18,8 +19,11 @@ class Protocol:
 
     Attributes
     -------
-    required_images : list of 2-tuples
-    dict_protocol_instances : dictionary
+    required_images : Dictionary
+        Key-value pairs of protocol image name and search terms derived from config.
+    dict_protocol_instances : Dictionary
+        Key-value pairs of protocol image name and Instance objects when used
+        with the `assign_instances_to_protocol` function.
     """
     def __init__(self, rules_config_file):
         with open(rules_config_file) as ymlfile:
@@ -39,8 +43,9 @@ class Protocol:
         Parameters
         ----------
         search_term : String
-            String to search for in instance['SeriesDescription']
+            String to search for in instance.series_description
         instance : Instance object
+
         Returns
         -------
         bool
@@ -77,12 +82,16 @@ class Protocol:
 
     def assign_instances_to_protocol(self, list_instances):
         """
-        Takes a list of dictionaries containing dicom object information
-        and attempts to match them to the protocol.
+        Takes a list of Instances containing dicom object information and
+        attempts to match them to the protocol.
 
         Parameters
         ----------
         list_instances : list of Instance objects.
+
+        See Also
+        --------
+        Instance
 
         Returns
         -------
@@ -126,7 +135,7 @@ class Instance:
     magnetic_field_strength : String
     pixel_array : 3-d ndarray
 
-    Attributes (object)
+    Attributes
     ----------
     series_instance_uid : String
     series_description : String
@@ -138,10 +147,6 @@ class Instance:
     patient_id : String
     magnetic_field_strength : String
     pixel_array : 3-d ndarray
-
-    See Also
-    --------
-    Numpy ndarray
     """
     def __init__(
             self,
