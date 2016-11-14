@@ -1,5 +1,5 @@
 """
-This module deals with obtaining a dicom object from an Orthanc server.
+Obtain dicom objects from an Orthanc server.
 """
 import io
 import sys
@@ -15,8 +15,7 @@ from .organise import Instance
 
 class Fetcher:
     """
-    A Class to facilitate an object-oriented approach to querying the
-    Orthanc server.
+    Object-oriented approach to querying the Orthanc server.
 
     Parameter values specify the details required to connect to and
     authenticate with the Orthanc server.
@@ -36,23 +35,20 @@ class Fetcher:
         The password required to access the Orthanc server.
         (e.g. `'orthanc'`)
 
-    Attributes (object)
+    Attributes
     ----------
     host : String
-        The v4 IP address of the Orthanc DICOM server.
-        (e.g. `'192.168.0.3'`)
+        The v4 IP address of the Orthanc DICOM server. (e.g. `'192.168.0.3'`)
     port : int
-        The port number that the Orthanc HTTP server is configured to
-        run on. (e.g. `80`)
+        The port number that the Orthanc HTTP server is configured to run on.
+        (e.g. `80`)
     user : String
-        The username required to access the Orthanc server.
-        (e.g. `'orthanc'`)
+        The username required to access the Orthanc server. (e.g. `'orthanc'`)
     passwd : String
-        The password required to access the Orthanc server.
-        (e.g. `'orthanc'`)
+        The password required to access the Orthanc server. (e.g. `'orthanc'`)
     accept : dictionary
-        MIME type used in the HTTP request header,
-        default value is {'Accept': 'application/json'}
+        MIME type used in the HTTP request header, default value is
+        `{'Accept': 'application/json'}`
     """
 
     def __init__(self, host, port, user, passwd):
@@ -64,39 +60,20 @@ class Fetcher:
 
     def get_studies_json(self, patient_name):
         """
-        A function to obtain a JSON object describing the studies on the
-        server which are associated with a patient name matching that supplied
-        in `patient_name`.
+        Obtain a JSON object describing the studies on the server associated
+        with a patient name matching that supplied in `patient_name`.
 
         Parameters
         ----------
         patient_name : String
             A string used to match against patient names of the studies on the
-            Orthanc server. You may include wildcards so that `'*BREAST*'` will
-            retrieve details of all studies where the patient name contains
-            'BREAST'.
+            Orthanc server. No need to include wildcards.
 
         Returns
         -------
         matches : JSON object
             A JSON object containing a list of matched studies with information
             such as date of study, name of patient etc...
-
-        See Also
-        --------
-        Orthanc : https://orthanc.chu.ulg.ac.be/book/plugins/dicomweb.html
-
-        Examples
-        --------
-        >>> fetcher.get_studies_json('*BREAST*')
-        [{'00080005': {'Value': ['ISO_IR 100'], 'vr': 'CS'},
-            '00080020': {'Value': ['20160627'], 'vr': 'DA'},
-            '00080030': {'Value': ['120515'], 'vr': 'TM'},
-            '00080050': {'Value': [''], 'vr': 'SH'},
-            '00080061': {'Value': ['MR'], 'vr': 'CS'},
-            '00080090': {'Value': [''], 'vr': 'PN'},
-            ...
-        >>>
         """
         patient_search_term = '*{}*'.format(patient_name)
         query = {'PatientName': patient_search_term}
@@ -112,18 +89,17 @@ class Fetcher:
 
     def get_n_most_recent_study_details(self, patient_name, n_most_recent):
         """
-        Gets the N most recent studies matching patient name criteria.
+        Get the N most recent studies matching patient name criteria.
 
         This function extends get_studies_json by allowing an additional
-        parameter specifying how many studies to return.
+        parameter specifying how many studies to return. Studies are returned in
+        descending order (most recent first).
 
         Parameters
         ----------
         patient_name : String
             A string used to match against patient names of the studies on the
-            Orthanc server. You may include wildcards so that `'*BREAST*'` will
-            retrieve details of all studies where the patient name contains
-            'BREAST'.
+            Orthanc server. No need to include wildcards.
         n_most_recent : int
             The number of studies to return.
 
@@ -166,7 +142,7 @@ class Fetcher:
         -------
         seriesuids : list of Strings
             A list of Series Instance UIDs as specified in the DICOM header
-            by tag (0020,000E)
+            by tag (0020,000E).
 
         """
         url = 'http://{}:{}/dicom-web/studies/{}/series/'.format(
@@ -185,35 +161,23 @@ class Fetcher:
 
     def get_valid_image_instance(self, studyuid, seriesuid):
         """
-        Check whether a series contains a valid image instance and return
-        it if so.
+        Check whether a series contains a valid image instance and return it if so.
 
         Parameters
         ----------
         studyuid : String
             Study Instance UID as specified in the DICOM header by (0020,000D).
         seriesuid : String
-            Series Instance UIDs as specified in the DICOM header by (0020,000E)
+            Series Instance UIDs as specified in the DICOM header by (0020,000E).
 
         Returns
         -------
         dicom_instance_info : Instance
+            An object of type Instance.
 
-        Examples
+        See Also
         --------
-        >>> dicom_instance_info = get_valid_image_instance(studyuid, seriesuid)
-        >>> for k, v in dicom_instance_info.items():
-        ...    print ((k, type(v)))
-        ('StudyDate', <type 'str'>)
-        ('MagneticFieldStrength', <type 'str'>)
-        ('SeriesDescription', <type 'str'>)
-        ('StudyDescription', <type 'str'>)
-        ('PatientID', <type 'str'>)
-        ('PixelArray', <type 'numpy.ndarray'>)
-        ('StationName', <type 'str'>)
-        ('StudyInstanceUID', <type 'str'>)
-        ('SeriesInstanceUID', <type 'str'>)
-        ('PatientName', <type 'str'>)
+        Instance
         """
         url = 'http://{}:{}/dicom-web/studies/{}/series/{}'.format(
             self.host,
