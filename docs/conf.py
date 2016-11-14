@@ -152,6 +152,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'BreastMRIQA', 'Breast MRI QA Documentation',
-     author, 'BreastMRIQA', 'One line description of project.',
+     author, 'Aaron Fowles', 'One line description of project.',
      'Miscellaneous'),
 ]
