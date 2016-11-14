@@ -1,0 +1,669 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>breast_mri_qa package &#8212; Breast MRI QA 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Breast MRI QA 0.1.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="breast-mri-qa-package">
+<h1>breast_mri_qa package<a class="headerlink" href="#breast-mri-qa-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-breast_mri_qa.fetch">
+<span id="breast-mri-qa-fetch-module"></span><h2>breast_mri_qa.fetch module<a class="headerlink" href="#module-breast_mri_qa.fetch" title="Permalink to this headline">¶</a></h2>
+<p>Obtain dicom objects from an Orthanc server.</p>
+<dl class="class">
+<dt id="breast_mri_qa.fetch.Fetcher">
+<em class="property">class </em><code class="descclassname">breast_mri_qa.fetch.</code><code class="descname">Fetcher</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>user</em>, <em>passwd</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Object-oriented approach to querying the Orthanc server.</p>
+<p>Parameter values specify the details required to connect to and
+authenticate with the Orthanc server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<em>String</em>) &#8211; The v4 IP address of the Orthanc DICOM server.
+(e.g. <cite>&#8216;192.168.0.3&#8217;</cite>)</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; The port number that the Orthanc HTTP server is configured to
+run on. (e.g. <cite>80</cite>)</li>
+<li><strong>user</strong> (<em>String</em>) &#8211; The username required to access the Orthanc server.
+(e.g. <cite>&#8216;orthanc&#8217;</cite>)</li>
+<li><strong>passwd</strong> (<em>String</em>) &#8211; The password required to access the Orthanc server.
+(e.g. <cite>&#8216;orthanc&#8217;</cite>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="breast_mri_qa.fetch.Fetcher.host">
+<code class="descname">host</code><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.host" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em> &#8211; The v4 IP address of the Orthanc DICOM server. (e.g. <cite>&#8216;192.168.0.3&#8217;</cite>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.fetch.Fetcher.port">
+<code class="descname">port</code><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.port" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; The port number that the Orthanc HTTP server is configured to run on.
+(e.g. <cite>80</cite>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.fetch.Fetcher.user">
+<code class="descname">user</code><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.user" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em> &#8211; The username required to access the Orthanc server. (e.g. <cite>&#8216;orthanc&#8217;</cite>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.fetch.Fetcher.passwd">
+<code class="descname">passwd</code><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.passwd" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em> &#8211; The password required to access the Orthanc server. (e.g. <cite>&#8216;orthanc&#8217;</cite>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.fetch.Fetcher.accept">
+<code class="descname">accept</code><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.accept" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em> &#8211; MIME type used in the HTTP request header, default value is
+<cite>{&#8216;Accept&#8217;: &#8216;application/json&#8217;}</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.fetch.Fetcher.get_n_most_recent_study_details">
+<code class="descname">get_n_most_recent_study_details</code><span class="sig-paren">(</span><em>patient_name</em>, <em>n_most_recent</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.get_n_most_recent_study_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the N most recent studies matching patient name criteria.</p>
+<p>This function extends get_studies_json by allowing an additional
+parameter specifying how many studies to return. Studies are returned in
+descending order (most recent first).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>patient_name</strong> (<em>String</em>) &#8211; A string used to match against patient names of the studies on the
+Orthanc server. No need to include wildcards.</li>
+<li><strong>n_most_recent</strong> (<em>int</em>) &#8211; The number of studies to return.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>n_most_recent_studies</strong> &#8211; A JSON object containing a list of matched studies with information
+such as date of study, name of patient etc... The number of JSON
+objects in the list will be less than or equal to the parameter
+<cite>n_most_recent</cite>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.fetch.Fetcher.get_series">
+<code class="descname">get_series</code><span class="sig-paren">(</span><em>studyuid</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.get_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all series UIDs associated with a certain Study.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>studyuid</strong> (<em>String</em>) &#8211; Study Instance UID as specified in the DICOM header by (0020,000D).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>seriesuids</strong> &#8211; A list of Series Instance UIDs as specified in the DICOM header
+by tag (0020,000E).</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list of Strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.fetch.Fetcher.get_studies_json">
+<code class="descname">get_studies_json</code><span class="sig-paren">(</span><em>patient_name</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.get_studies_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain a JSON object describing the studies on the server associated
+with a patient name matching that supplied in <cite>patient_name</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>patient_name</strong> (<em>String</em>) &#8211; A string used to match against patient names of the studies on the
+Orthanc server. No need to include wildcards.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>matches</strong> &#8211; A JSON object containing a list of matched studies with information
+such as date of study, name of patient etc...</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.fetch.Fetcher.get_valid_image_instance">
+<code class="descname">get_valid_image_instance</code><span class="sig-paren">(</span><em>studyuid</em>, <em>seriesuid</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.fetch.Fetcher.get_valid_image_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a series contains a valid image instance and return it if so.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>studyuid</strong> (<em>String</em>) &#8211; Study Instance UID as specified in the DICOM header by (0020,000D).</li>
+<li><strong>seriesuid</strong> (<em>String</em>) &#8211; Series Instance UIDs as specified in the DICOM header by (0020,000E).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dicom_instance_info</strong> &#8211; An object of type Instance.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#breast_mri_qa.organise.Instance" title="breast_mri_qa.organise.Instance">Instance</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">Instance()</span></code></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-breast_mri_qa.measure">
+<span id="breast-mri-qa-measure-module"></span><h2>breast_mri_qa.measure module<a class="headerlink" href="#module-breast_mri_qa.measure" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions used to make the calculations required for QA.</p>
+<dl class="function">
+<dt id="breast_mri_qa.measure.assign_regions">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">assign_regions</code><span class="sig-paren">(</span><em>image_array</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.assign_regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign left and right regions of test object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_array</strong> (<em>2-d ndarray</em>) &#8211; 2-d numpy array to be used</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>regions</strong> &#8211; Dictionary containing two keys, left and right which contain references
+to the respective 2-d arrays used to represent each region.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Dictionary</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">Numpy()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="breast_mri_qa.measure.calculate_efficiency">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">calculate_efficiency</code><span class="sig-paren">(</span><em>fat_suppressed</em>, <em>water_suppressed</em>, <em>roi</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.calculate_efficiency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate suppresion efficiency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fat_suppressed</strong> (<em>2-d ndarray</em>) &#8211; 2-d numpy array representing the fat suppressed image slice. Element
+values in range [0-255].</li>
+<li><strong>water_suppressed</strong> (<em>2-d ndarray</em>) &#8211; 2-d numpy array representing the water suppressed image slice. Element
+values in range [0-255].</li>
+<li><strong>roi</strong> (<em>2-d ndarray</em>) &#8211; 2-d numpy array representing the water suppressed image slice. Element
+values are 1 if element is in region of interest and 0 otherwise.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>suppression_efficiency</strong> &#8211; Unformatted float giving the suppression efficiency calculated using
+the following formula:
+100*(fat_suppressed_mean - water_suppressed_mean)/fat_suppressed</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">Numpy()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="breast_mri_qa.measure.find_roi">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">find_roi</code><span class="sig-paren">(</span><em>region</em>, <em>roi_proportion</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.find_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the region of interest.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>region</strong> (<em>2-d ndarray</em>) &#8211; Numpy area indicating region containing part of the test phantom
+object. Elements with a value of 1 indicate parts of the image which
+contain the feature, otherwise elements are 0.</li>
+<li><strong>roi_proportion</strong> (<em>float</em>) &#8211; Value in the range [0-1] indicating proportion of <cite>region</cite> to select
+as the region of interest.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>roi</strong> &#8211; Numpy area indicating region containing part of the test phantom
+object to be used as the ROI. Elements with a value of 1 indicate parts
+of the image which contain the feature, otherwise elements are 0.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2-d ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="breast_mri_qa.measure.fse">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">fse</code><span class="sig-paren">(</span><em>fat_suppressed</em>, <em>water_suppressed</em>, <em>roi_proportion=0.8</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.fse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate fat suppression efficiency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fat_suppressed</strong> (<em>2-d ndarray</em>) &#8211; </li>
+<li><strong>water_suppressed</strong> (<em>2-d ndarray</em>) &#8211; </li>
+<li><strong>roi_proportion</strong> (<em>float</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>fse_results</strong> &#8211; <cite>fse_results[&#8216;left_fse&#8217;]</cite> contains a float indicating the results for
+the left region. It is in the range [0-100]. <cite>fse_results[&#8216;right_fse&#8217;]</cite>
+contains a float indicating the results for the right region.
+It is also in the range [0-100].</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary of floats</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">numpy()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="breast_mri_qa.measure.get_mid_slice">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">get_mid_slice</code><span class="sig-paren">(</span><em>pixel_array</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.get_mid_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the middle slice of a 3-d numpy ndarray.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pixel_array</strong> (<em>3-d ndarray</em>) &#8211; 3-d array of form [z, y, x].</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>pixel_array</strong> &#8211; A 2-d numpy array [y,x] of the middle slice from the 3-d input array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">2-d ndarray</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">numpy()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="breast_mri_qa.measure.snr">
+<code class="descclassname">breast_mri_qa.measure.</code><code class="descname">snr</code><span class="sig-paren">(</span><em>unsuppressed_one</em>, <em>unsuppressed_two</em>, <em>roi_proportion=0.8</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.measure.snr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the signal-to-noise ratio.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>unsuppressed_one</strong> (<em>2-d ndarray</em>) &#8211; </li>
+<li><strong>unsuppressed_two</strong> (<em>2-d ndarray</em>) &#8211; </li>
+<li><strong>roi_proportion</strong> (<em>float</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>snr_results</strong> &#8211; <cite>snr_results[&#8216;left_snr&#8217;]</cite> contains a float indicating the results for
+the left region. <cite>snr_results[&#8216;right_snr&#8217;]</cite> contains a float
+indicating the results for the right region.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">numpy()</span></code></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-breast_mri_qa.organise">
+<span id="breast-mri-qa-organise-module"></span><h2>breast_mri_qa.organise module<a class="headerlink" href="#module-breast_mri_qa.organise" title="Permalink to this headline">¶</a></h2>
+<p>This module allows a user to specify a protocol to ensure that a study
+contains all the images required to do the QA analysis.</p>
+<dl class="class">
+<dt id="breast_mri_qa.organise.Instance">
+<em class="property">class </em><code class="descclassname">breast_mri_qa.organise.</code><code class="descname">Instance</code><span class="sig-paren">(</span><em>series_instance_uid</em>, <em>series_description</em>, <em>study_description</em>, <em>study_instance_uid</em>, <em>study_date</em>, <em>station_name</em>, <em>patient_name</em>, <em>patient_id</em>, <em>magnetic_field_strength</em>, <em>pixel_array</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.organise.Instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Create an Instance object.</p>
+<p>An object to hold the pixel array and associated dicom meta-data
+of a dicom instance. In this context, an instance is a dicom object
+pertaining to a multi-slice MRI image acquisition where <cite>self.pixel_array</cite>
+is a 3-d numpy ndarray indexed by [z,y,x].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>series_instance_uid</strong> (<em>String</em>) &#8211; </li>
+<li><strong>series_description</strong> (<em>String</em>) &#8211; </li>
+<li><strong>study_description</strong> (<em>String</em>) &#8211; </li>
+<li><strong>study_instance_uid</strong> (<em>String</em>) &#8211; </li>
+<li><strong>study_date</strong> (<em>String</em>) &#8211; </li>
+<li><strong>station_name</strong> (<em>String</em>) &#8211; </li>
+<li><strong>patient_name</strong> (<em>String</em>) &#8211; </li>
+<li><strong>patient_id</strong> (<em>String</em>) &#8211; </li>
+<li><strong>magnetic_field_strength</strong> (<em>String</em>) &#8211; </li>
+<li><strong>pixel_array</strong> (<em>3-d ndarray</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.series_instance_uid">
+<code class="descname">series_instance_uid</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.series_instance_uid" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.series_description">
+<code class="descname">series_description</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.series_description" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.study_description">
+<code class="descname">study_description</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.study_description" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.study_instance_uid">
+<code class="descname">study_instance_uid</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.study_instance_uid" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.study_date">
+<code class="descname">study_date</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.study_date" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.station_name">
+<code class="descname">station_name</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.station_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.patient_name">
+<code class="descname">patient_name</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.patient_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.patient_id">
+<code class="descname">patient_id</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.patient_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.magnetic_field_strength">
+<code class="descname">magnetic_field_strength</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.magnetic_field_strength" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>String</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Instance.pixel_array">
+<code class="descname">pixel_array</code><a class="headerlink" href="#breast_mri_qa.organise.Instance.pixel_array" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>3-d ndarray</em></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="breast_mri_qa.organise.Protocol">
+<em class="property">class </em><code class="descclassname">breast_mri_qa.organise.</code><code class="descname">Protocol</code><span class="sig-paren">(</span><em>rules_config_file</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.organise.Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Make Protocol objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rules_config_file</strong> (<em>filepath to yaml config</em>) &#8211; Each element of the rules list specifies the information required_images
+to determine how to match a dicom object to a protocol image.
+(e.g. The first item in the tuple specifies the name of the protocol image
+(e.g. &#8216;snr_acquisition_one&#8217;), the second specifies the string used to match an
+image name to a protocol image (e.g.) &#8216;SNR&#8217;.)</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Protocol.required_images">
+<code class="descname">required_images</code><a class="headerlink" href="#breast_mri_qa.organise.Protocol.required_images" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Dictionary</em> &#8211; Key-value pairs of protocol image name and search terms derived from config.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="breast_mri_qa.organise.Protocol.dict_protocol_instances">
+<code class="descname">dict_protocol_instances</code><a class="headerlink" href="#breast_mri_qa.organise.Protocol.dict_protocol_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Dictionary</em> &#8211; Key-value pairs of protocol image name and Instance objects when used
+with the <cite>assign_instances_to_protocol</cite> function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.organise.Protocol.assign_instances_to_protocol">
+<code class="descname">assign_instances_to_protocol</code><span class="sig-paren">(</span><em>list_instances</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.organise.Protocol.assign_instances_to_protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of Instances containing dicom object information and
+attempts to match them to the protocol.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>list_instances</strong> (<em>list of Instance objects.</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#breast_mri_qa.organise.Instance" title="breast_mri_qa.organise.Instance"><code class="xref py py-meth docutils literal"><span class="pre">Instance()</span></code></a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>missing_acquisitions</strong> &#8211; Empty if there are enough images present in <cite>list_instances</cite> to
+form a complete protocol. Otherwise, each element in the list is the
+name of the protocol item not present.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of Strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.organise.Protocol.match_logic">
+<code class="descname">match_logic</code><span class="sig-paren">(</span><em>search_term</em>, <em>instance</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.organise.Protocol.match_logic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function used to checker whether an dicom object&#8217;s name matches the
+naming convention required for that image in the protocol.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>search_term</strong> (<em>String</em>) &#8211; String to search for in instance.series_description</li>
+<li><strong>instance</strong> (<em>Instance object</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if <cite>search_term</cite> occurs in SeriesDescription, False otherwise.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="breast_mri_qa.organise.Protocol.save_instance">
+<code class="descname">save_instance</code><span class="sig-paren">(</span><em>img_name</em>, <em>instance</em><span class="sig-paren">)</span><a class="headerlink" href="#breast_mri_qa.organise.Protocol.save_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the specified instance to the internal <cite>dict_protocol_instances</cite>
+object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img_name</strong> (<em>String</em>) &#8211; Name to use as the identifying key in the <cite>dict_protocol_instances</cite>
+dictionary under which the image should be saved. This must match a
+valid protocol image name.</li>
+<li><strong>instance</strong> (<em>Instance object</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if image saved succesfully, False otherwise.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-breast_mri_qa">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-breast_mri_qa" title="Permalink to this headline">¶</a></h2>
+<p>This package houses code for processing dicom images obtained from an
+Orthanc server using its http protocol. It has only been tested work with
+images obtained from a Phillips MRI machine and will need to be revised in
+order to guarantee functional use with other manufacturers&#8217; machines. This is
+mostly due to the fact that a multi-slice instance is represented as a single
+dicom object by Phillips whereas this is not the case for other manufacturers.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">breast_mri_qa package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-breast_mri_qa.fetch">breast_mri_qa.fetch module</a></li>
+<li><a class="reference internal" href="#module-breast_mri_qa.measure">breast_mri_qa.measure module</a></li>
+<li><a class="reference internal" href="#module-breast_mri_qa.organise">breast_mri_qa.organise module</a></li>
+<li><a class="reference internal" href="#module-breast_mri_qa">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/breast_mri_qa.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Breast MRI QA 0.1.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Aaron Fowles.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5a2.
+    </div>
+  </body>
+</html>
