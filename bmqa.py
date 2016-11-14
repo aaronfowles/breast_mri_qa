@@ -1,5 +1,9 @@
 #! /usr/bin/python
-
+"""
+This command line tool will allow the user to run various QA measurements on
+a MRI image study. It uses the API provided in the breast_mri_qa package to
+acheive most of the heavy lifting.
+"""
 from __future__ import absolute_import, division, print_function
 from builtins import input
 
@@ -9,14 +13,18 @@ import collections
 
 from breast_mri_qa import fetch, organise, measure
 
+# Parse aruguements from command line
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', nargs=1, required=True, default='config.yml')
 args = parser.parse_args()
 
+# Keep a reference to the handle of the config file
 rules_config_file = args.config[0]
 
+# Open the config file
 with open(rules_config_file) as ymlfile:
     cfg = yaml.load(ymlfile)
+    # Get server connection params
     params = cfg['connection_params']
     fetcher = fetch.Fetcher(
         host=params['host'],
@@ -24,48 +32,47 @@ with open(rules_config_file) as ymlfile:
         user=params['user'],
         passwd=params['passwd']
     )
+    # Save protocol rules
     rules = [rule for rule in cfg['name_identifier_pairs'].items()]
 
+# Get search term to query server
 patient_name = input('Enter search term for patient name: ')
 n_most_recent = 4
 print('searching...')
-
 studies = fetcher.get_n_most_recent_study_details(
     patient_name=patient_name,
     n_most_recent=n_most_recent
 )
 
+# Present user with list of studies to QA
 studyuids = [study['StudyUID'] for study in studies]
 studies_for_select = []
-
 print('The following studies were found.')
-
 for study in studies:
     study_without_id = dict(study)
     del study_without_id['StudyUID']
     studies_for_select.append(study_without_id)
-
 selection_options = zip([i for i in range(1, len(studies)+1)], studies_for_select)
-
 for option in selection_options:
     print(option)
 
+# Prompt user for which study
 selected_study = input("Enter the number of the study you would like to use: ")
-selection_index = int(selected_study) - 1
 
+# Get selected study
+print('fetching instances...')
+selection_index = int(selected_study) - 1
 studyuid = studyuids[selection_index]
 study = studies[selection_index]
 seriesuids = fetcher.get_series(studyuid)
-
-print('fetching instances...')
 instances = list(filter(lambda x: x is not None, (fetcher.get_valid_image_instance(studyuid, uid) for uid in seriesuids)))
 protocol = organise.Protocol(rules_config_file)
 missing_instances = protocol.assign_instances_to_protocol(instances)
 assert not missing_instances, missing_instances
 
+# Collate results
 images = protocol.dict_protocol_instances
 study = collections.OrderedDict(study)
-
 study['PatientID'] = instances[0].patient_id
 study['StudyDescription'] = instances[0].study_description
 study['StationName'] = instances[0].station_name
@@ -88,8 +95,7 @@ identifier = 'coil_{}_acquisition_one'
 for row in enumerate(num_to_str.items()):
     study[identifier.format(row[1][1])] = '{:.2f}'.format(measure.get_mid_slice(images[identifier.format(row[1][1])].pixel_array).mean())
 
-print(study)
-
+# Save results
 import csv
 import os.path
 csv_dir = 'results'
@@ -99,4 +105,4 @@ with open(csv_rel_path, 'w', newline='') as f:
     csv_file = csv.writer(f)
     csv_file.writerow(study.keys())
     csv_file.writerow(study.values())
-    print('results saved in ' + os.path.abspath(os.path.curdir) + str(csv_rel_path))
+    print('results saved in ' + os.path.join(os.path.abspath(os.path.curdir), str(csv_rel_path)))

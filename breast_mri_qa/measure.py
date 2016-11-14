@@ -103,7 +103,6 @@ def assign_regions(image_array):
     region_2 = (regions == 2).astype(int)
     left_region = None
     right_region = None
-    regionprops(region_1)[0].centroid[1]
     # region centroid (x) > half-way point
     if (regionprops(region_1)[0].centroid[1] > img_width / 2):
         left_region = region_1
@@ -203,6 +202,8 @@ def snr(unsuppressed_one, unsuppressed_two, roi_proportion=0.8):
     left_roi = find_roi(left_region, roi_proportion)
     right_roi = find_roi(right_region, roi_proportion)
 
+    unsuppressed_one = np.array(unsuppressed_one, dtype='float32')
+    unsuppressed_two = np.array(unsuppressed_two, dtype='float32')
     difference_image = unsuppressed_one - unsuppressed_two
     difference_image_left = difference_image.copy()
     difference_image_right = difference_image.copy()

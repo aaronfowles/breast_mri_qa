@@ -18,7 +18,10 @@ python bmqa.py --config config.yml
 
 Follow the instructions.
 
-
+## Configuration
+The configuration for the CLI may be found [here](config.yml). It is written in
+YAML. The `name_identifier_pairs` specify the name of an image in the protocol
+and the corresponding search term used to identify an image type.
 
 
 [Issue Tracker](https://github.com/aaronfowles/breast_mri_qa/issues)
