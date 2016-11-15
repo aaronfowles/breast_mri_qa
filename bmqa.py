@@ -68,7 +68,10 @@ seriesuids = fetcher.get_series(studyuid)
 instances = list(filter(lambda x: x is not None, (fetcher.get_valid_image_instance(studyuid, uid) for uid in seriesuids)))
 protocol = organise.Protocol(rules_config_file)
 missing_instances = protocol.assign_instances_to_protocol(instances)
-assert not missing_instances, missing_instances
+try:
+    assert not missing_instances, missing_instances
+except(AssertionError):
+    print("Warning: The following images are missing from the protocol {}".format(missing_instances))
 
 # Collate results
 images = protocol.dict_protocol_instances
@@ -93,7 +96,10 @@ study['SPAIR-FSE_right'] = spair_results['right_fse']
 num_to_str = {'1':'one','2':'two','3':'three','4':'four','5':'five','6':'six','7':'seven'}
 identifier = 'coil_{}_acquisition_one'
 for row in enumerate(num_to_str.items()):
-    study[identifier.format(row[1][1])] = '{:.2f}'.format(measure.get_mid_slice(images[identifier.format(row[1][1])].pixel_array).mean())
+    try:
+        study[identifier.format(row[1][1])] = '{:.2f}'.format(measure.get_mid_slice(images[identifier.format(row[1][1])].pixel_array).mean())
+    except:
+        print("Missing: {}".format(identifier.format(row[1][1])))
 
 # Save results
 import csv
@@ -101,8 +107,8 @@ import os.path
 csv_dir = 'results'
 csv_filename = study['StationName'] + '_' + study['StudyDate'] + '.csv'
 csv_rel_path = os.path.join(csv_dir, csv_filename)
-with open(csv_rel_path, 'w', newline='') as f:
-    csv_file = csv.writer(f)
+with open(csv_rel_path, 'w') as f:
+    csv_file = csv.writer(f, delimiter=',')
     csv_file.writerow(study.keys())
     csv_file.writerow(study.values())
     print('results saved in ' + os.path.join(os.path.abspath(os.path.curdir), str(csv_rel_path)))
