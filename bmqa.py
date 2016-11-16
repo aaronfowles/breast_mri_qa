@@ -81,17 +81,24 @@ study['StudyDescription'] = instances[0].study_description
 study['StationName'] = instances[0].station_name
 study['MagneticFieldStrength'] = instances[0].magnetic_field_strength
 
-snr_results = measure.snr(measure.get_mid_slice(images['snr_acquisition_one'].pixel_array), measure.get_mid_slice(images['snr_acquisition_two'].pixel_array))
-study['SNR_left'] = snr_results['left_snr']
-study['SNR_right'] = snr_results['right_snr']
-
-spir_results = measure.fse(measure.get_mid_slice(images['spir_fat'].pixel_array), measure.get_mid_slice(images['spir_water'].pixel_array))
-study['SPIR-FSE_left'] = spir_results['left_fse']
-study['SPIR-FSE_right'] = spir_results['right_fse']
-
-spair_results = measure.fse(measure.get_mid_slice(images['spair_fat'].pixel_array), measure.get_mid_slice(images['spair_water'].pixel_array))
-study['SPAIR-FSE_left'] = spair_results['left_fse']
-study['SPAIR-FSE_right'] = spair_results['right_fse']
+try:
+    snr_results = measure.snr(measure.get_mid_slice(images['snr_acquisition_one'].pixel_array), measure.get_mid_slice(images['snr_acquisition_two'].pixel_array))
+    study['SNR_left'] = snr_results['left_snr']
+    study['SNR_right'] = snr_results['right_snr']
+except KeyError as e:
+    print(e)
+try:
+    spir_results = measure.fse(measure.get_mid_slice(images['spir_fat'].pixel_array), measure.get_mid_slice(images['spir_water'].pixel_array))
+    study['SPIR-FSE_left'] = spir_results['left_fse']
+    study['SPIR-FSE_right'] = spir_results['right_fse']
+except KeyError as e:
+    print(e)
+try:
+    spair_results = measure.fse(measure.get_mid_slice(images['spair_fat'].pixel_array), measure.get_mid_slice(images['spair_water'].pixel_array))
+    study['SPAIR-FSE_left'] = spair_results['left_fse']
+    study['SPAIR-FSE_right'] = spair_results['right_fse']
+except KeyError as e:
+    print(e)
 
 num_to_str = {'1':'one','2':'two','3':'three','4':'four','5':'five','6':'six','7':'seven'}
 identifier = 'coil_{}_acquisition_one'
