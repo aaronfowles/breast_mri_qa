@@ -4,6 +4,8 @@ This package contains code which may be used to automate various aspects of MRI 
 [![Documentation Status](https://readthedocs.org/projects/breast-mri-qa/badge/?version=1.0.0)](http://breast-mri-qa.readthedocs.io/en/1.0.0/?badge=1.0.0)
 [![PyPI version](https://badge.fury.io/py/breast_mri_qa.svg)](https://badge.fury.io/py/breast_mri_qa)
 
+![](https://s3.eu-central-1.amazonaws.com/eu-ddream/dream_9898cddf93.jpg?raw=true)
+
 ## Notebook
 The demonstrative notebook may be found [here](ExampleBreastMRI.ipynb).
 
